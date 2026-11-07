@@ -1,0 +1,22 @@
+{
+  "name": "清月空间站 ~ Pleniluner’s Space Station",
+  "short_name": "清月空间站",
+  "description": "清月（Pleniluner）的个人主页。",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#071014",
+  "theme_color": "#071014",
+  "icons": [
+    {
+      "src": "./site-icon-192-v3.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "./site-icon-512-v3.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
