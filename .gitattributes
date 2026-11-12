@@ -5,3 +5,18 @@
 *.mp3 binary
 *.woff2 binary
 *.pdf binary
+
+# Classify the maintained source files by their actual language.
+*.ts linguist-language=TypeScript
+*.tsx linguist-language=TypeScript
+*.js linguist-language=JavaScript
+*.mjs linguist-language=JavaScript
+*.css linguist-language=CSS
+*.glsl linguist-language=GLSL
+
+# Include the maintained TeX source, which lives in a documentation directory.
+docs/rendering.tex linguist-language=TeX linguist-detectable=true linguist-documentation=false
+
+# Upstream animation timing is licensed and maintained separately.
+src/components/station/rhine-timing/** linguist-vendored=true
+src/components/station/content/artwork.json linguist-generated=true

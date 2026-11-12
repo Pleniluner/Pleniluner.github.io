@@ -21,6 +21,10 @@
 
 坐标、采样与透明度公式见 `rendering.tex`。文档构建独立于网站，更新 TeX 不影响网页运行。
 
+## 仓库语言统计
+
+`.gitattributes` 按文件的真实语言识别 TypeScript、JavaScript、CSS 和 GLSL，并将持续维护的 `docs/rendering.tex` 纳入 TeX 统计。引用的 Rhine Lab 开屏时间轴标记为第三方代码，图片清单标记为生成文件。比例由各语言的源码体积计算；翻译 JSON、二进制媒体和部署产物沿用常规排除规则。GitHub 在推送后异步更新 Languages，页面可能暂时显示缓存结果。
+
 ## 发布与域名
 
 Pages 发布来源选择 **GitHub Actions**。`.github/workflows/pages.yml` 在 `main` 推送时运行，与分支直接托管 HTML 的方式分开。
