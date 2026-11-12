@@ -1,0 +1,55 @@
+/* Personal notes: clear reading, with long technical lists one level deeper. */
+.profile-content { min-width: 0; }
+.profile-copy { margin: 0 0 18px; max-width: 76ch; font-size: 16px; line-height: 1.9; overflow-wrap: anywhere; }
+.profile-copy:last-child { margin-bottom: 0; }
+.profile-content strong { font-weight: 600; color: inherit; }
+.profile-content h3 { margin: 0 0 20px; font: 400 clamp(22px, 2.2vw, 30px)/1.5 var(--font-display); }
+.profile-content a:not(.resource-list a) { text-decoration: underline; text-underline-offset: .25em; }
+.profile-preamble { max-width: 78ch; margin-bottom: 40px; }
+.profile-groups--rows > .profile-row { display: grid; grid-template-columns: minmax(180px, .65fr) minmax(0, 1.4fr); gap: 48px; padding-block: 32px; border-top: 1px solid var(--rule); }
+.profile-row > div { min-width: 0; }
+.profile-groups--grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 48px 56px; }
+.profile-groups--grid .profile-row { padding-top: 28px; border-top: 1px solid var(--rule); }
+.profile-plans { margin-top: 48px; padding-top: 40px; border-top: 1px solid var(--rule); }
+.profile-plans > div > .profile-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px 40px; padding: 0; margin: 32px 0; list-style: none; }
+.profile-plans > div > .profile-list > li { margin: 0; }
+.profile-plans > div > .profile-list > li > strong:first-child { display: block; margin-bottom: 8px; font-size: 19px; }
+.profile-list { padding-inline-start: 20px; margin-block: 16px 24px; font-size: 15px; line-height: 1.9; overflow-wrap: anywhere; }
+.profile-list li { padding-inline-start: 4px; margin-bottom: 10px; }
+.profile-fold { border-top: 1px solid var(--rule); margin-block: 0; }
+.profile-fold:last-child { border-bottom: 1px solid var(--rule); }
+.profile-fold > summary { display: flex; align-items: center; justify-content: space-between; gap: 24px; min-height: 72px; padding-block: 20px; font: 400 17px/1.65 system-ui, -apple-system, "Segoe UI", sans-serif; cursor: pointer; list-style: none; }
+.profile-fold > summary::-webkit-details-marker { display: none; }
+.profile-fold > summary > span:first-child { min-width: 0; overflow-wrap: anywhere; }
+.profile-fold > summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 5px; }
+.profile-fold__mark { position: relative; flex: 0 0 16px; width: 16px; height: 16px; color: var(--muted); }
+.profile-fold__mark::before, .profile-fold__mark::after { content: ""; position: absolute; inset: 7px 1px auto; height: 1px; background: currentColor; }
+.profile-fold__mark::after { transform: rotate(90deg); }
+.profile-fold[open] > summary { color: var(--accent); }
+.profile-fold[open] > summary .profile-fold__mark::after { transform: none; }
+.profile-fold__body { min-width: 0; padding-block: 4px 30px; }
+.profile-fold__body > h3:not(:first-child) { margin-top: 32px; }
+.profile-fold__body .profile-fold { margin-top: 24px; }
+.profile-fold__body .resource-list { margin-top: 24px; }
+.profile-table-wrap { max-width: 100%; margin-block: 24px 36px; }
+.profile-table { width: 100%; table-layout: fixed; border-collapse: collapse; font: 14px/1.7 system-ui, -apple-system, "Segoe UI", sans-serif; }
+.profile-table th, .profile-table td { text-align: start; vertical-align: top; border-bottom: 1px solid var(--rule); padding: 14px 16px; overflow-wrap: anywhere; }
+.profile-table th { color: var(--muted); font-weight: 400; }
+.profile-table th:first-child { width: 32%; }
+.profile-table td { unicode-bidi: plaintext; }
+.profile-table td:first-child { color: var(--muted); }
+.gear-panel .gear { display: block; }
+.gear-panel .gear-heading { max-width: 72ch; margin-bottom: 40px; }
+.profile-goodbye { margin: 64px 0 0; padding-top: 32px; border-top: 1px solid var(--rule); font: italic clamp(21px, 2.4vw, 32px)/1.6 Georgia, serif; }
+@media (hover: hover) { .profile-fold > summary:hover { color: var(--accent); } }
+@media (max-width: 900px) {
+  .profile-groups--rows > .profile-row { grid-template-columns: 1fr; gap: 8px; }
+  .profile-groups--grid { gap: 36px; }
+  .profile-plans > div > .profile-list { grid-template-columns: 1fr; gap: 24px; }
+}
+@media (max-width: 600px) {
+  .profile-groups--grid { grid-template-columns: 1fr; }
+  .profile-fold > summary { font-size: 16px; }
+  .profile-table th, .profile-table td { padding: 12px 8px; font-size: 13px; }
+  .profile-table th:first-child { width: 35%; }
+}

@@ -1,0 +1,213 @@
+/* Endfield UI: nightshift, cool paper, tight cuts, calm motion.
+   Adapted to the station's existing artwork and reading layout. The short
+   control feedback replaces the removed full-screen chapter interstitials.
+   Reference: https://github.com/hhikr/endfield-ui-skill (96702a3). */
+@font-face {
+  font-family: "Saira";
+  src: url("../assets/fonts/saira-variable.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 100 900;
+  font-stretch: 50% 125%;
+  font-display: swap;
+}
+
+:root {
+  --ef-signal: #d8eb51;
+  --ef-ink: #edf2eb;
+  --ef-muted: #b8c4bc;
+  --ef-panel: #192223;
+  --ef-rule: #53625b;
+  --ef-font-ui: "Saira", "Segoe UI", "Microsoft YaHei", system-ui, sans-serif;
+  --ef-font-text: "Segoe UI", "Microsoft YaHei", system-ui, sans-serif;
+  --ef-snap: cubic-bezier(.16, 1, .3, 1);
+}
+
+.station-home {
+  --accent: var(--ef-signal);
+  --font-display: var(--ef-font-ui);
+  --font-reading: var(--ef-font-text);
+}
+.station-home .hero-quote h1 {
+  font-family: var(--ef-font-ui);
+  font-weight: 650;
+  font-stretch: 110%;
+  font-size: clamp(44px, 8vw, 112px);
+  line-height: 1.08;
+  letter-spacing: -.025em;
+}
+.station-home .section h2 {
+  font-family: var(--ef-font-ui);
+  font-weight: 650;
+  line-height: 1.3;
+  letter-spacing: -.02em;
+}
+.station-home .section-kicker {
+  font-family: var(--ef-font-ui);
+  font-weight: 550;
+  letter-spacing: .04em;
+}
+.station-home .profile-row h3,
+.station-home .profile-fold > summary {
+  font-family: var(--ef-font-ui);
+  font-weight: 600;
+}
+.station-home .interests .profile-row > h3 { font-size: 22px; }
+.station-home .interests .profile-copy { line-height: 1.85; }
+.station-home .compact-header .wordmark .station-identity small {
+  font-family: var(--ef-font-ui);
+  font-weight: 450;
+}
+
+.motion-ready .station-home [data-reveal] { transition-duration: 320ms; }
+.motion-ready .station-home [data-reveal="line"]::before {
+  transition-duration: 320ms;
+  transition-delay: 0ms;
+}
+
+/* A cut corner marks a control; reading surfaces keep straight edges. */
+.station-home .header-controls__bar { gap: 8px; }
+.station-home .header-control {
+  min-height: 44px;
+  padding: 10px 16px;
+  gap: 14px;
+  border: 0;
+  border-radius: 0;
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 7px), calc(100% - 7px) 100%, 0 100%);
+  background: var(--ef-panel);
+  color: var(--ef-ink);
+  font: 600 14px/1.5 var(--ef-font-ui);
+  transition: background-color 180ms, color 180ms;
+}
+.station-home .header-control[aria-expanded="true"] {
+  background: var(--ef-signal);
+  color: #101617;
+}
+.station-home .header-control:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: -5px;
+}
+.station-home .header-control__chevron { transition: transform 200ms var(--ef-snap); }
+.station-home .header-control[aria-expanded="true"] .header-control__chevron { transform: rotate(180deg); }
+.station-home .compact-header .header-popover,
+.station-home .compact-header nav.header-directory {
+  width: min(360px, calc(100vw - 32px));
+  max-height: calc(100svh - 140px);
+  padding: 12px;
+  border: 1px solid var(--ef-rule);
+  border-radius: 0;
+  background: #141c1d;
+  box-shadow: none;
+  backdrop-filter: none;
+  animation: station-menu-open 200ms var(--ef-snap);
+}
+.station-home .header-directory__links { gap: 4px 12px; }
+.station-home .compact-header nav.header-directory a,
+.station-home .header-language .language-grid a {
+  min-height: 48px;
+  padding: 10px 12px;
+  border: 0;
+  border-bottom: 1px solid #53625b80;
+  border-radius: 0;
+  color: var(--ef-ink);
+  font: 550 15px/1.5 var(--ef-font-ui);
+  transition: background-color 180ms, color 180ms;
+}
+.station-home .header-language .language-grid { gap: 4px 8px; }
+.station-home .header-language .language-grid a[aria-current="page"] {
+  background: var(--ef-signal);
+  color: #101617;
+  border-color: transparent;
+}
+.station-home .header-popover a:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: -3px;
+}
+@keyframes station-menu-open {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* The five destinations share one compact baseline instead of tall posters. */
+.station-home .fields-panel.section { padding-top: 260px; }
+.station-home .field-tabs { gap: 8px; margin-bottom: 40px; }
+.station-home .field-tabs button {
+  min-height: 224px;
+  padding: 22px 20px 18px;
+  border: 0;
+  border-bottom: 2px solid var(--ef-rule);
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%);
+  background: #192223f5;
+  color: var(--ef-ink);
+  transition: color 200ms, border-color 200ms, background-color 200ms;
+}
+.station-home .field-tabs button::before {
+  background: var(--ef-signal);
+  transform: translateX(-101%);
+  transition: transform 240ms var(--ef-snap);
+}
+.station-home .field-card-symbol { width: 48px; height: 48px; margin-block: 0 20px; }
+.station-home .field-card-title { font: 600 18px/1.5 var(--ef-font-ui); }
+.station-home .field-card-heading i { display: none; }
+.station-home .field-card-index {
+  display: inline-flex;
+  align-items: center;
+  min-width: 32px;
+  min-height: 25px;
+  padding: 3px 8px;
+  font: 600 14px/1.3 var(--ef-font-ui);
+  letter-spacing: .02em;
+  color: var(--ef-muted);
+  opacity: 1;
+}
+.station-home .field-tabs button[aria-selected="true"] { background: #25312d; border-color: var(--ef-signal); }
+.station-home .field-tabs button[aria-selected="true"] .field-card-title { color: var(--ef-ink); }
+.station-home .field-tabs button[aria-selected="true"] .field-card-index { background: var(--ef-signal); color: #101617; }
+.station-home .field-tabs button:focus-visible { outline: 2px solid var(--ef-ink); outline-offset: -5px; }
+.motion-ready .station-home .field-tabs.is-visible button {
+  animation: station-field-enter 320ms var(--ef-snap) both;
+}
+.motion-ready .station-home .field-tabs.is-visible button:nth-of-type(2) { animation-delay: 30ms; }
+.motion-ready .station-home .field-tabs.is-visible button:nth-of-type(3) { animation-delay: 60ms; }
+.motion-ready .station-home .field-tabs.is-visible button:nth-of-type(4) { animation-delay: 90ms; }
+.motion-ready .station-home .field-tabs.is-visible button:nth-of-type(5) { animation-delay: 120ms; }
+.station-home .field-panel { animation: station-field-enter 240ms var(--ef-snap); }
+@keyframes station-field-enter {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (hover: hover) {
+  .station-home .header-control:hover,
+  .station-home .header-popover a:hover { background: var(--ef-signal); color: #101617; }
+  .station-home .field-tabs button:hover { color: #101617; border-color: var(--ef-signal); }
+  .station-home .field-tabs button:hover::before { transform: translateX(0); }
+  .station-home .field-tabs button:hover .field-card-symbol,
+  .station-home .field-tabs button:hover .field-card-title { transform: none; color: #101617; }
+  .station-home .field-tabs button:hover .field-card-index { background: #10161712; color: #101617; opacity: 1; }
+}
+@media (max-width: 700px) {
+  .station-home .header-control { padding: 9px 12px; }
+  .station-home .compact-header .header-popover,
+  .station-home .compact-header nav.header-directory { inset-inline-end: 0; width: min(340px, calc(100vw - 64px)); }
+  .station-home .fields-panel.section { padding-top: 200px; }
+  .station-home .field-tabs { gap: 8px; margin-bottom: 28px; }
+  .station-home .field-tabs button { min-height: 156px; padding: 16px; }
+  .station-home .field-card-symbol { width: 36px; height: 36px; margin-block: 0 12px; }
+  .station-home .field-card-title { font-size: 16px; }
+  .station-home .field-tabs button:last-child { grid-column: 1 / -1; flex-direction: row; align-items: center; gap: 16px; min-height: 88px; }
+  .station-home .field-tabs button:last-child .field-card-symbol { flex-shrink: 0; margin: 0; }
+  .station-home .field-tabs button:last-child .field-card-heading { flex: 1; }
+  .station-home .field-tabs button:last-child .field-card-index { flex-shrink: 0; margin-top: 0; }
+  .station-home .interests .profile-row > h3 { font-size: 21px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .station-home .compact-header .header-popover,
+  .station-home .compact-header nav.header-directory,
+  .station-home .field-panel,
+  .motion-ready .station-home .field-tabs.is-visible button { animation: none; }
+  .station-home .header-control,
+  .station-home .header-control__chevron,
+  .station-home .header-popover a,
+  .station-home .field-tabs button,
+  .station-home .field-tabs button::before { transition: none; }
+}

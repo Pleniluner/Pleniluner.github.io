@@ -1,0 +1,18 @@
+/* Restore each item's original left-to-right rule as it enters the viewport. */
+.profile-content .profile-fold { border-top: 0; border-bottom: 0; }
+.profile-content [data-reveal="line"], .social-list a[data-reveal="line"] {
+  position: relative;
+  border-top: 0;
+  border-bottom: 1px solid var(--rule);
+}
+.profile-groups--grid .profile-row[data-reveal="line"],
+.profile-plans .profile-list > li[data-reveal="line"] { padding-bottom: 28px; }
+.motion-ready .profile-content [data-reveal="line"],
+.motion-ready .social-list a[data-reveal="line"] { border-bottom-color: transparent; }
+.motion-ready .profile-content [data-reveal="line"]::before,
+.motion-ready .social-list a[data-reveal="line"]::before {
+  top: auto;
+  bottom: -1px;
+  background: var(--rule);
+  transform-origin: left center;
+}

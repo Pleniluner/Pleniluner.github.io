@@ -1,0 +1,208 @@
+/* Station 05: a shared reading scale, independent of the archived studies. */
+.station-home {
+  --font-reading: system-ui, -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif;
+  --font-body: var(--font-reading);
+  width: min(1160px, calc(100% - 112px));
+  font: 400 16px/1.8 var(--font-reading);
+}
+.station-home .section {
+  padding-block: 88px;
+  border-top-color: var(--rule);
+}
+.station-home .section h2 {
+  font: 400 clamp(32px, 3vw, 44px)/1.35 var(--font-display);
+  letter-spacing: 0;
+  overflow-wrap: break-word;
+  word-break: normal;
+  text-wrap: balance;
+}
+.station-home .section-kicker {
+  margin-bottom: 16px;
+  font: 400 12px/1.5 var(--font-reading);
+  letter-spacing: .08em;
+}
+.station-home .section-header { display: block; margin-bottom: 36px; }
+.station-home :is(#computing, #tools, #architecture, #gear, #learning, #radio) > .panel-frame {
+  display: block;
+  max-width: 880px;
+  margin-inline: auto;
+}
+.station-home .profile-copy,
+.station-home .profile-list {
+  max-width: 74ch;
+  font: 400 16px/1.85 var(--font-reading);
+  color: #c8ceca;
+  overflow-wrap: break-word;
+}
+.station-home .profile-copy { margin-block: 0 16px; }
+.station-home .profile-copy:last-child { margin-bottom: 0; }
+.station-home .profile-content strong { color: var(--ink); font-weight: 550; }
+.station-home .profile-content h3 {
+  margin-block: 0 18px;
+  font: 400 24px/1.5 var(--font-display);
+  letter-spacing: 0;
+  text-wrap: balance;
+}
+.station-home .profile-preamble { margin-bottom: 28px; }
+.station-home .profile-list { margin-block: 16px 24px; padding-inline-start: 20px; }
+.station-home .profile-list li { margin-bottom: 8px; padding-inline-start: 2px; }
+.station-home .profile-fold > summary {
+  min-height: 68px;
+  gap: 20px;
+  padding-block: 20px;
+  font: 450 18px/1.5 var(--font-reading);
+}
+.station-home .profile-fold__body { padding-block: 24px 32px; }
+.station-home .profile-fold__body > h3 { font: 500 19px/1.6 var(--font-reading); }
+.station-home .profile-fold__body > h3:not(:first-child) { margin-top: 28px; }
+.station-home .profile-fold__body .profile-fold { margin-top: 20px; }
+.station-home .profile-fold__body .profile-fold > summary { font-size: 16px; }
+.station-home .profile-fold__body .profile-copy > strong:only-child { font-weight: 450; }
+.station-home .profile-content h3.profile-subheading { margin: 24px 0 8px; font: 500 15px/1.6 var(--font-reading); color: var(--ink); text-wrap: initial; }
+.station-home .profile-content h3.profile-subheading:first-child { margin-top: 0; }
+.station-home .profile-groups--rows > .profile-row {
+  grid-template-columns: minmax(200px, .42fr) minmax(0, 1fr);
+  gap: 40px;
+  padding-block: 28px;
+}
+.station-home .profile-groups--grid { gap: 36px 56px; align-items: start; }
+.station-home .profile-groups--grid .profile-row { padding-block: 0 28px; }
+.station-home .profile-plans { margin-top: 36px; padding-top: 32px; }
+.station-home .profile-plans > div > .profile-list { max-width: none; gap: 24px 40px; }
+.station-home .profile-plans > div > .profile-list > li > strong:first-child { font-size: 18px; }
+.station-home .profile-table-wrap { margin-block: 24px 32px; }
+.station-home .profile-table { font: 15px/1.75 var(--font-reading); }
+.station-home .profile-table th,
+.station-home .profile-table td { padding: 14px 16px; }
+.station-home .profile-table th:first-child { width: 30%; }
+.station-home .profile-table strong { font-weight: 500; }
+.station-home .gear-panel .gear-heading { margin-bottom: 36px; max-width: none; }
+.station-home .resource-list { border-bottom: 0; }
+.station-home .resource-list a {
+  min-height: 0;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px 24px;
+  padding-block: 24px;
+}
+.station-home .resource-list strong { font: 500 18px/1.5 var(--font-reading); }
+.station-home .resource-list a > span:not(.resource-action) { grid-column: 1; font-size: 15px; }
+.station-home .resource-action { grid-column: 2; grid-row: 1; align-self: center; }
+
+/* Full-bleed artwork: the picture and its reading column share one screen. */
+.station-home #about { margin-top: 0; scroll-margin-top: 0; }
+.station-home #about.section { padding: 0; }
+.station-home .about-art-layout {
+  width: 100vw;
+  margin: 0;
+  margin-inline-start: calc(50% - 50vw);
+  min-height: 100svh;
+  grid-template-columns: minmax(0, 1.18fr) minmax(0, 1fr);
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  background: #182021;
+}
+.station-home .about-art-layout .profile-artwork { min-height: 100svh; }
+.station-home .profile-artwork__image { position: absolute; inset: 0; overflow: hidden; }
+.station-home .profile-artwork__image > img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center; }
+.station-home .profile-artwork__image::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, transparent 60%, #182021); pointer-events: none; }
+.station-home .about-profile {
+  min-height: 100svh;
+  padding: 112px clamp(32px, 5vw, 88px) 64px 40px;
+  justify-content: center;
+}
+.station-home .about-art-layout .about-profile .section-header { margin-bottom: 28px; }
+.station-home .about-art-layout .about-profile .section-header h2 { font-size: clamp(36px, 3.2vw, 48px); line-height: 1.3; letter-spacing: 0; }
+.station-home .about-art-layout .about-profile .section-header p { font: 14px/1.75 var(--font-reading); margin-top: 12px; }
+.station-home .about-art-layout .about-profile .hero-intro { font: 16px/1.85 var(--font-reading); }
+.station-home .about-art-layout .about-profile .hero-intro > p:first-child { font-size: 21px; line-height: 1.7; }
+.station-home .about-name-details { margin-top: 16px; }
+.station-home .about-art-layout .music-player { margin-top: 28px; padding-top: 24px; }
+.station-home .about-art-layout .music-title { font: 400 clamp(20px, 1.7vw, 25px)/1.35 var(--font-display); }
+.station-home .about-art-layout .music-track-list { font-size: 13px; }
+.station-home .about-panel--continuation { margin-top: 0; padding: 80px max(56px, calc((100vw - 1160px) / 2)); }
+.station-home .about-continuation { grid-template-columns: 1.1fr 1fr; gap: 64px; align-items: start; }
+.station-home .about-continuation__copy.hero-intro,
+.station-home .about-continuation__copy.hero-intro p:first-of-type { font: 16px/1.9 var(--font-reading); }
+.station-home .about-continuation__copy .profile-copy { color: #58625b; }
+.station-home .about-continuation .design-credo { padding-left: 0; padding-inline-start: 40px; border-left: 0; border-inline-start: 1px solid var(--rule); }
+.station-home .about-continuation .design-credo-statement { font: 400 clamp(23px, 2vw, 28px)/1.8 var(--font-display); letter-spacing: 0; }
+.station-home .design-credo-statement span + span { margin-top: 16px; }
+.station-home .design-credo-source { margin-top: 24px; font: 12px/1.7 var(--font-reading); }
+.station-home .voice-line-player { margin-top: 28px; padding-block: 20px; }
+
+/* Compact language choices; the checkmark never offsets the centered label. */
+.station-home .header-popover,
+.station-home .compact-header nav.header-directory { background: #14191a; }
+.station-home .header-language { width: min(336px, calc(100vw - 36px)); padding: 20px 16px; border-radius: 12px; }
+.station-home .header-language .header-popover__caption { text-align: center; margin-bottom: 14px; font: 12px/1.5 var(--font-reading); }
+.station-home .language-grid { gap: 2px 4px; }
+.station-home .language-grid a { position: relative; justify-content: center; padding: 10px 20px; min-height: 44px; text-align: center; font-size: 14px; }
+.station-home .language-grid a > span:last-child { position: absolute; inset-inline-end: 6px; font-size: 12px; }
+
+.station-home .connect.section { padding-bottom: 24px; }
+.station-home .connect-frame { max-width: 880px; margin-inline: auto; }
+.station-home .connect-kicker { margin-top: 0; text-align: center; }
+.station-home .connect-email { display: block; width: fit-content; max-width: 100%; margin-inline: auto; font: 400 clamp(21px, 2.1vw, 30px)/1.5 var(--font-reading); letter-spacing: -.025em; text-align: center; padding-bottom: 8px; border: 0; }
+.station-home .connect-email::before { content: none; }
+.station-home .connect-email:hover { color: var(--accent); }
+.station-home .social-list { grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 40px; column-gap: 32px; }
+.station-home .social-list a { min-height: 60px; grid-template-columns: 22px minmax(0, 1fr) 18px; padding-block: 18px; }
+.station-home .social-list a > strong { white-space: normal; overflow: visible; text-overflow: clip; }
+.station-home .profile-goodbye { font-size: 24px; margin: 0; padding-block: 56px; border: 0; text-align: center; text-wrap: balance; }
+.station-home .site-footer { display: flex; justify-content: space-between; align-items: center; min-height: 0; margin: 0; padding-block: 24px; gap: 12px 24px; border-color: var(--rule); }
+.station-home .site-footer span:nth-child(2) { display: block; font: italic 13px/1.5 Georgia, serif; }
+
+@media (min-width: 1100px) {
+  .station-home :is(#computing, #tools, #architecture, #gear, #learning, #radio) h2 { font-size: 36px; }
+  .station-home :is(#computing, #tools, #architecture) .profile-groups--folds > .profile-fold:first-child > summary { padding-top: 0; min-height: 48px; }
+}
+html[dir="rtl"] .station-home .about-profile { padding: 112px 40px 64px clamp(32px, 5vw, 88px); }
+html[dir="rtl"] .station-home .profile-artwork__image::after { background: linear-gradient(270deg, transparent 60%, #182021); }
+html[dir="rtl"] .station-home .about-continuation .design-credo { padding-inline-start: 40px; }
+@media (max-width: 1099px) {
+  .station-home { width: calc(100% - 80px); }
+  .station-home .section { padding-block: 64px; }
+  .station-home .about-continuation { gap: 40px; }
+  .station-home .about-panel--continuation { padding-inline: 40px; }
+}
+@media (max-width: 900px) {
+  .station-home .about-art-layout { grid-template-columns: 1fr; min-height: 0; }
+  .station-home .about-art-layout .profile-artwork { min-height: 0; height: auto; aspect-ratio: 1.48; }
+  .station-home .profile-artwork__image::after,
+  html[dir="rtl"] .station-home .profile-artwork__image::after { background: linear-gradient(180deg, transparent 65%, #182021); }
+  .station-home .about-profile,
+  html[dir="rtl"] .station-home .about-profile { min-height: 0; padding: 36px 40px 56px; }
+  .station-home .about-art-layout .about-profile .hero-intro { max-width: none; }
+  .station-home .about-continuation { grid-template-columns: 1fr; gap: 36px; }
+  .station-home .about-continuation .design-credo,
+  html[dir="rtl"] .station-home .about-continuation .design-credo { padding: 28px 0 0; border-inline-start: 0; }
+  .station-home .profile-groups--rows > .profile-row { grid-template-columns: 1fr; gap: 8px; }
+}
+@media (max-width: 600px) {
+  .station-home { width: calc(100% - 40px); }
+  .station-home .section { padding-block: 52px; }
+  .station-home .section-header,
+  .station-home .gear-panel .gear-heading { margin-bottom: 28px; }
+  .station-home .section h2 { font-size: 30px; }
+  .station-home .profile-content h3 { font-size: 22px; }
+  .station-home .profile-groups--grid { grid-template-columns: 1fr; gap: 28px; }
+  .station-home .profile-fold > summary { min-height: 64px; font-size: 17px; padding-block: 18px; }
+  .station-home .profile-fold__body { padding-block: 20px 28px; }
+  .station-home .profile-copy,
+  .station-home .profile-list { font-size: 15px; line-height: 1.85; }
+  .station-home .about-profile,
+  html[dir="rtl"] .station-home .about-profile { padding: 28px 24px 44px; }
+  .station-home .about-panel--continuation { padding: 48px 24px; }
+  .station-home .about-continuation .design-credo-statement { font-size: 23px; }
+  .station-home .profile-table th,
+  .station-home .profile-table td { font-size: 14px; padding: 12px 8px; }
+  .station-home .profile-table th:first-child { width: 35%; }
+  .station-home .profile-fold__body > h3 { font-size: 18px; }
+  .station-home .resource-list strong { font-size: 17px; }
+  .station-home .social-list { grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 32px; column-gap: 24px; border-top: 1px solid var(--rule); padding-top: 8px; }
+  .station-home .social-list a { grid-template-columns: minmax(0, 1fr) 16px; }
+  .station-home .social-list a > span { display: none; }
+  .station-home .profile-goodbye { font-size: 20px; padding-block: 44px; }
+  .station-home .site-footer { margin-top: 8px; padding-block: 22px 28px; }
+}

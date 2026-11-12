@@ -1,0 +1,40 @@
+/* A station-specific interpretation of the RhineLabUI opening timeline. */
+.intro-loader {
+  position:fixed; z-index:1000; inset:0; overflow:hidden;
+  background:#101214; color:#ecf0eb; opacity:1;
+  --access-alpha:0; --logo-alpha:0; --logo-shift:0; --logo-symbol-alpha:0; --logo-text-alpha:0; --auth-alpha:0;
+  --brand-alpha:0; --scan-alpha:0; --scan-message-alpha:0;
+  --welcome-alpha:0; --welcome-scale:1; --welcome-highlight:0; --welcome-detail-alpha:0; --welcome-flash:0;
+  transition:opacity 800ms cubic-bezier(.22,.61,.36,1);
+}
+.intro-loader.is-leaving { opacity:0; pointer-events:none; }
+.intro-loader__corners { position:absolute; z-index:1; top:clamp(30px,7.4vh,80px); left:clamp(28px,3.2vw,64px); display:grid; color:#f0f2ed; opacity:var(--brand-alpha); font:600 clamp(14px,1.6vw,25px)/1.08 var(--font-reading); letter-spacing:.025em; }
+.intro-loader__corners span + span { margin-top:4px; font-size:.52em; font-weight:400; letter-spacing:.18em; }
+.intro-loader__corners i { width:28px; height:3px; margin-top:12px; background:var(--accent); }
+.intro-loader__access { position:absolute; top:50%; left:50%; width:max-content; max-width:calc(100% - 48px); transform:translate(-50%,-50%); opacity:var(--access-alpha); color:#d9ded9; font:400 clamp(11px,1.1vw,16px)/1.4 var(--font-reading); letter-spacing:.13em; }
+.intro-loader__identity { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; gap:clamp(28px,5vw,90px); width:min(680px,calc(100% - 48px)); margin:auto; }
+.intro-loader__mark { width:clamp(120px,14vw,200px); flex:0 0 auto; opacity:var(--logo-alpha); transform:translateX(min(20vw,calc(var(--logo-shift) * .6px))); }
+.intro-loader__mark svg { display:block; width:100%; overflow:visible; }
+.intro-loader__mark-path { stroke-dasharray:0 1; }
+.intro-loader__mark-accent { opacity:var(--logo-symbol-alpha); }
+.intro-loader__mark span { display:block; margin-top:3px; opacity:var(--logo-text-alpha); text-align:center; font:500 clamp(9px,.75vw,12px)/1.4 var(--font-reading); letter-spacing:.22em; }
+.intro-loader__auth { display:flex; align-items:center; gap:12px; min-width:225px; opacity:var(--auth-alpha); color:#d6ddd7; font:400 clamp(11px,1vw,15px)/1.5 var(--font-reading); letter-spacing:.04em; }
+.intro-loader__auth i { width:6px; height:6px; flex:0 0 auto; background:var(--accent); }
+.intro-loader__scanner { position:absolute; inset:0; display:grid; place-items:center; pointer-events:none; }
+.intro-loader__scanner svg { position:absolute; inset:0; width:100%; height:100%; overflow:visible; color:#dde4df; opacity:var(--scan-alpha); }
+.intro-loader__scan-path--muted { opacity:.25; }
+.intro-loader__scanner > span { color:#f0f2ed; opacity:var(--scan-message-alpha); font:400 clamp(12px,1.1vw,18px)/1.5 var(--font-reading); letter-spacing:.12em; }
+.intro-loader__welcome { position:absolute; top:50%; left:50%; display:flex; flex-direction:column; align-items:center; width:min(720px,calc(100% - 48px)); text-align:center; opacity:var(--welcome-alpha); transform:translate(-50%,-50%) scale(var(--welcome-scale)); }
+.intro-loader__welcome::before { content:""; position:absolute; inset:-30px 0; background:#dbe6db; opacity:calc(var(--welcome-flash) * .1); pointer-events:none; }
+.intro-loader__welcome > span { font:400 clamp(20px,2.2vw,36px)/1.4 var(--font-display); }
+.intro-loader__welcome strong { margin-top:10px; padding:3px 12px 6px; background:var(--accent); color:#172019; clip-path:inset(0 calc((1 - var(--welcome-highlight)) * 100%) 0 0); font:650 clamp(29px,4vw,60px)/1.15 var(--font-reading); letter-spacing:.06em; opacity:var(--welcome-detail-alpha); }
+.intro-loader__welcome small { margin-top:8px; color:#a9b5ad; opacity:var(--welcome-detail-alpha); font:400 clamp(11px,.9vw,14px)/1.4 var(--font-reading); letter-spacing:.18em; }
+.intro-loader__welcome svg { width:clamp(70px,7vw,104px); margin-top:28px; color:#cdd8d0; opacity:var(--welcome-detail-alpha); }
+@media (max-width:620px) {
+  .intro-loader__identity { flex-direction:column; gap:28px; }
+  .intro-loader__mark { width:min(46vw,180px); transform:translateX(0); }
+  .intro-loader__auth { min-width:0; justify-content:center; min-height:28px; }
+  .intro-loader__scanner svg { width:180%; max-width:none; left:-40%; }
+  .intro-loader__welcome > span { font-size:clamp(18px,5vw,25px); }
+}
+@media (prefers-reduced-motion:reduce) { .intro-loader { display:none; } }

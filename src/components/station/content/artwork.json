@@ -1,0 +1,178 @@
+{
+  "images/kaguya.png": {
+    "width": 1935,
+    "height": 943,
+    "originalBytes": 1915725,
+    "sha256": "08d06e21e8e855a0d64cde6ad82975ba6cd38de055b299d98ea792812d5db5a2",
+    "variants": [
+      {
+        "src": "media/artwork/kaguya-640-f5fda6b7b2.webp",
+        "width": 640,
+        "height": 312,
+        "bytes": 24444
+      },
+      {
+        "src": "media/artwork/kaguya-960-f5fda6b7b2.webp",
+        "width": 960,
+        "height": 468,
+        "bytes": 45318
+      },
+      {
+        "src": "media/artwork/kaguya-1440-f5fda6b7b2.webp",
+        "width": 1440,
+        "height": 702,
+        "bytes": 83114
+      },
+      {
+        "src": "media/artwork/kaguya-1920-f5fda6b7b2.webp",
+        "width": 1920,
+        "height": 936,
+        "bytes": 124142
+      },
+      {
+        "src": "media/artwork/kaguya-1935-f5fda6b7b2.webp",
+        "width": 1935,
+        "height": 943,
+        "bytes": 124824
+      }
+    ]
+  },
+  "images/starlight.jpg": {
+    "width": 4642,
+    "height": 2611,
+    "originalBytes": 3708402,
+    "sha256": "f455d2daec7fcb6d8ca0a344a6d53ce4d20d7355c52255e7b5d8fea88d73341b",
+    "variants": [
+      {
+        "src": "media/artwork/starlight-640-17beee0072.webp",
+        "width": 640,
+        "height": 360,
+        "bytes": 83084
+      },
+      {
+        "src": "media/artwork/starlight-960-17beee0072.webp",
+        "width": 960,
+        "height": 540,
+        "bytes": 190120
+      },
+      {
+        "src": "media/artwork/starlight-1440-17beee0072.webp",
+        "width": 1440,
+        "height": 810,
+        "bytes": 424240
+      },
+      {
+        "src": "media/artwork/starlight-1920-17beee0072.webp",
+        "width": 1920,
+        "height": 1080,
+        "bytes": 738956
+      },
+      {
+        "src": "media/artwork/starlight-2560-17beee0072.webp",
+        "width": 2560,
+        "height": 1440,
+        "bytes": 1249008
+      },
+      {
+        "src": "media/artwork/starlight-3200-17beee0072.webp",
+        "width": 3200,
+        "height": 1800,
+        "bytes": 1750226
+      },
+      {
+        "src": "media/artwork/starlight-4642-17beee0072.webp",
+        "width": 4642,
+        "height": 2611,
+        "bytes": 3232792
+      }
+    ]
+  },
+  "images/music-room.png": {
+    "width": 3236,
+    "height": 1700,
+    "originalBytes": 6745350,
+    "sha256": "4c6b468bbfddf91a77d26d185651f66b24d86889243b1641571f2dc5bd05fb8f",
+    "variants": [
+      {
+        "src": "media/artwork/music-room-640-4568bc42e3.webp",
+        "width": 640,
+        "height": 336,
+        "bytes": 54978
+      },
+      {
+        "src": "media/artwork/music-room-960-4568bc42e3.webp",
+        "width": 960,
+        "height": 504,
+        "bytes": 103024
+      },
+      {
+        "src": "media/artwork/music-room-1440-4568bc42e3.webp",
+        "width": 1440,
+        "height": 756,
+        "bytes": 189228
+      },
+      {
+        "src": "media/artwork/music-room-1920-4568bc42e3.webp",
+        "width": 1920,
+        "height": 1009,
+        "bytes": 303400
+      },
+      {
+        "src": "media/artwork/music-room-2560-4568bc42e3.webp",
+        "width": 2560,
+        "height": 1345,
+        "bytes": 448122
+      },
+      {
+        "src": "media/artwork/music-room-3200-4568bc42e3.webp",
+        "width": 3200,
+        "height": 1681,
+        "bytes": 638188
+      },
+      {
+        "src": "media/artwork/music-room-3236-4568bc42e3.webp",
+        "width": 3236,
+        "height": 1700,
+        "bytes": 653404
+      }
+    ]
+  },
+  "images/fields.jpg": {
+    "width": 2334,
+    "height": 1410,
+    "originalBytes": 3122617,
+    "sha256": "884663addc87f4cd095d39b72796602226352b7b62d2ad7c035976169e70c773",
+    "variants": [
+      {
+        "src": "media/artwork/fields-640-1135673983.webp",
+        "width": 640,
+        "height": 387,
+        "bytes": 39810
+      },
+      {
+        "src": "media/artwork/fields-960-1135673983.webp",
+        "width": 960,
+        "height": 580,
+        "bytes": 74748
+      },
+      {
+        "src": "media/artwork/fields-1440-1135673983.webp",
+        "width": 1440,
+        "height": 870,
+        "bytes": 138818
+      },
+      {
+        "src": "media/artwork/fields-1920-1135673983.webp",
+        "width": 1920,
+        "height": 1160,
+        "bytes": 232396
+      },
+      {
+        "src": "media/artwork/fields-2334-1135673983.webp",
+        "width": 2334,
+        "height": 1410,
+        "bytes": 351596
+      }
+    ]
+  }
+}

@@ -1,0 +1,66 @@
+/* Language menus, long translations and bidirectional text. */
+.compact-header .wordmark { min-width: 0; max-width: none; flex: 1 1 0; white-space: normal; flex-wrap: wrap; gap: 6px 16px; }
+.header-control__language-name { flex: 0 0 auto; white-space: nowrap; }
+.compact-header .wordmark > span { font-size: clamp(22px, 2.4vw, 36px); line-height: 1.2; overflow-wrap: anywhere; letter-spacing: .02em; }
+.compact-header .wordmark small { white-space: nowrap; }
+.header-popover, .compact-header nav.header-directory { right: auto; left: auto; inset-inline-end: 0; }
+.header-language { width: min(390px, calc(100vw - 36px)); }
+.language-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px 14px; }
+.language-grid a { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 10px 8px; min-height: 44px; color: inherit; text-decoration: none; border-radius: 5px; font: 15px/1.5 system-ui, sans-serif; }
+.language-grid a:hover { background: #ffffff0d; }
+.language-grid a[aria-current="page"] { color: #d8eb51; background: #d8eb510b; }
+.language-grid a:focus-visible { outline: 2px solid #d8eb51; outline-offset: 1px; }
+.compact-header nav.header-directory a { overflow-wrap: anywhere; font-size: clamp(16px, 1.6vw, 20px); }
+.work-row > *, .interest-grid > *, .gear dl, .gear dl > div > *, .resource-list a > *, .connect-heading, .connect-links, .about-profile { min-width: 0; }
+.work-row h3, .section h2, .interest-grid h3, .gear dt, .resource-list strong { overflow-wrap: anywhere; hyphens: auto; }
+.work-row__meta { overflow-wrap: anywhere; text-align: end; }
+.section-kicker { line-height: 1.5; }
+.voice-line-player { grid-template-columns: 42px minmax(0, 1fr); }
+.voice-languages { grid-column: 1 / -1; justify-content: flex-start; gap: 6px 20px; }
+.voice-languages button { text-align: start; min-height: 44px; }
+.music-title, .music-artist, .music-track-copy, .music-track-list, .music-controls, .connect-email, .social-list, .panel-telemetry { direction: ltr; unicode-bidi: isolate; }
+.music-track-list button { text-align: left; }
+.music-eyebrow, .voice-line-copy { overflow-wrap: anywhere; }
+.hero-quote h1 { direction: ltr; unicode-bidi: isolate; }
+.site-footer { flex-wrap: wrap; gap: 16px; }
+:lang(ja) { --font-cjk: "Yu Mincho", "Hiragino Mincho ProN", "Noto Serif JP", serif; }
+:lang(ko) { --font-cjk: "Malgun Gothic", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif; word-break: keep-all; overflow-wrap: break-word; }
+html[dir="rtl"] { --font-body: Tahoma, Arial, sans-serif; --font-display: Tahoma, Arial, sans-serif; --font-wordmark: Tahoma, Arial, sans-serif; }
+html[dir="rtl"] :is(h1,h2,h3,p,a,span,button,strong,small,dt,dd) { letter-spacing: normal; }
+html[dir="rtl"] .hero-title-stage { margin-left: 0; margin-inline-start: calc(50% - 50vw); }
+html[dir="rtl"] .hero-art::after { background: linear-gradient(270deg, #081012b8, #08101230 75%), linear-gradient(180deg, transparent 50%, #101617); }
+html[dir="rtl"] .hero-title-stage .hero-quote { padding-left: 0; padding-inline-start: max(6vw, calc((100vw - 1280px) / 2)); text-align: start; }
+html[dir="rtl"] .hero-quote h1 { text-align: right; }
+html[dir="rtl"] .hero-scroll-cue { left: auto; inset-inline-start: max(6vw, calc((100vw - 1280px) / 2)); }
+html[dir="rtl"] .about-profile { padding: 64px 24px 40px clamp(28px,4vw,64px); }
+html[dir="rtl"] .profile-artwork__open::after { background: linear-gradient(270deg, transparent 60%, #182021 100%); }
+html[dir="rtl"] .profile-artwork__open { border-radius: 0 5px 5px 0; }
+html[dir="rtl"] .about-panel--continuation { margin-left: 0; margin-inline-start: calc(50% - 50vw); }
+html[dir="rtl"] .about-continuation .design-credo { padding-left: 0; padding-inline-start: 40px; border-left: 0; border-inline-start: 1px solid var(--rule); }
+html[dir="rtl"] .resource-action { margin-left: 0; margin-inline-start: auto; }
+html[dir="rtl"] .gear dt, html[dir="rtl"] .gear dd { text-align: start; }
+@media (max-width: 900px) {
+  .work-row__meta { text-align: start; }
+  html[dir="rtl"] .hero-title-stage .hero-quote { padding-inline: 24px; }
+  html[dir="rtl"] .hero-scroll-cue { inset-inline-start: 24px; }
+  html[dir="rtl"] .about-profile { padding: 24px 28px 32px; }
+  html[dir="rtl"] .profile-artwork__open::after { background: linear-gradient(180deg, transparent 65%, #182021); }
+  html[dir="rtl"] .profile-artwork__open { border-radius: 5px 5px 0 0; }
+  html[dir="rtl"] .about-continuation .design-credo { padding: 32px 0 0; border-inline-start: 0; }
+}
+@media (max-width: 620px) {
+  .compact-header.site-header { display: grid; grid-template-columns: minmax(0, 1fr); gap: 2px; padding-block: 16px 8px; }
+  .compact-header .wordmark { width: 100%; }
+  .compact-header .wordmark > span { overflow-wrap: normal; word-break: normal; }
+  .compact-header .header-controls { justify-self: end; }
+}
+@media (max-width: 480px) {
+  .hero-art::after, html[dir="rtl"] .hero-art::after { background: linear-gradient(180deg, #08101299 0%, #08101280 48%, #101617 100%); }
+  .compact-header .wordmark > span { font-size: 20px; line-height: 1.24; }
+  .compact-header.site-header { padding-inline: 18px; }
+  .header-popover, .compact-header nav.header-directory { padding: 20px; }
+  .header-language { width: min(354px, calc(100vw - 36px)); }
+  .hero-title-stage .hero-quote [data-type-zh] { max-width: 30ch; line-height: 1.75; }
+  .about-art-layout .about-profile .section-header h2 { font-size: clamp(30px, 8vw, 38px); }
+  html[dir="rtl"] .about-profile { padding-inline: 22px; }
+}

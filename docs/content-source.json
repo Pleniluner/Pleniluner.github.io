@@ -1,0 +1,9 @@
+{
+  "source": "User-provided README.md",
+  "integratedOn": "2026-10-26",
+  "sha256": "8d856f3fc9a9aea809ab5d3f6853f478357d26f56f617a9b845c40e70b577651",
+  "sourceBytes": 23580,
+  "profileMessageCount": 203,
+  "locales": ["zh-CN", "zh-TW", "en", "ja", "ko", "ru", "fr", "de", "it", "pt", "es", "ar"],
+  "notes": "Decorative README badges are represented as text. Future plans remain plans. Product names, supplied versions and public reference links are preserved."
+}

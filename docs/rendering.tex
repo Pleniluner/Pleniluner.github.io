@@ -1,0 +1,85 @@
+\documentclass[11pt]{article}
+\usepackage[margin=27mm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage[hidelinks]{hyperref}
+\title{Pleniluner's Space Station\\Rendering Notes}
+\author{Pleniluner}
+\date{13 November 2026}
+\begin{document}
+\maketitle
+
+\section{A stationary illustration}
+The hero illustration has no scroll-dependent transformation. Its local image
+transform is the identity, and its clipping region is the rectangular viewport:
+\[
+ T_{\mathrm{image}}(s)=I,\qquad C(s)=[0,w]\times[0,h]
+ \quad\hbox{for every scroll position }s.
+\]
+Cover sizing still follows the aspect ratio of the hero container. The separate
+star layer does not change the image, its bounds, or the layout of any text.
+
+\section{Bounded drawing resolution}
+For a canvas with CSS width $w$, height $h$, and device pixel ratio $d$, the
+JavaScript driver selects
+\[
+ r=\min\left(d,1.5,\frac{1600}{\max(w,h)}\right),\qquad
+ (W,H)=\left(\max(1,\operatorname{round}(rw)),
+              \max(1,\operatorname{round}(rh))\right).
+\]
+Thus the longest buffer edge is at most 1600 pixels, apart from integer
+rounding. Fragment coordinates are converted back to CSS coordinates using
+$\mathbf{p}=\mathbf{x}_{\mathrm{frag}}/r$. Star spacing therefore remains
+consistent across ordinary and high-density displays. No high-resolution image
+is sampled by the shader.
+
+\section{Sparse stars and smooth edges}
+The plane is divided into cells of side length $64$ CSS pixels. Let
+\[
+ \mathbf{c}=\lfloor\mathbf{p}/64\rfloor,\qquad
+ \mathbf{q}=64\,\operatorname{fract}(\mathbf{p}/64),\qquad
+ H(\mathbf{c})=\operatorname{fract}\left(
+ \sin(127.1c_x+311.7c_y)\,43758.5453\right).
+\]
+This deterministic visual hash is not a cryptographic random function.
+The center and radius of a candidate star are
+\begin{align*}
+ \boldsymbol{\mu}&=64\left[0.175+0.65
+   \begin{pmatrix}H(\mathbf{c})\\H(\mathbf{c}+7)\end{pmatrix}\right],\\
+ \rho&=0.45+0.60H(\mathbf{c}+3).
+\end{align*}
+Vector additions use the same scalar in both coordinates, matching GLSL.
+Only cells satisfying $H(\mathbf{c}+11)\geq0.84$ are visible. With
+$S(a,b,x)=\operatorname{smoothstep}(a,b,x)$, their opacity is
+\[
+ \alpha=0.32\,\mathbf{1}_{H(\mathbf{c}+11)\geq0.84}
+ \left[1-S\left(0.25\rho,\rho+0.8/r,
+                  \lVert\mathbf{q}-\boldsymbol{\mu}\rVert\right)\right].
+\]
+Premultiplied output is $(\alpha\mathbf{k},\alpha)$ with
+$\mathbf{k}=(0.72,0.78,0.75)$. This keeps transparent pixels compatible with
+browser composition over the original illustration.
+
+\section{Drawing and recovery}
+The layer draws on initialization, container or window resize, and restored
+WebGL context. Requests within a frame are coalesced. There is no time uniform
+and no continuous animation loop. When the context is lost, GPU object
+references are discarded; on restoration the program and buffer are rebuilt.
+Component disposal removes observers and listeners and deletes live resources.
+If context creation or shader compilation fails, CSS supplies a static texture.
+The reduced-motion preference never introduces an alternative animated path.
+
+\section{Other illustrations}
+Full-frame illustrations use their intrinsic aspect ratios without scroll
+scaling. Remaining background scenes retain the existing smooth arrival
+function $f(t)=t^2(3-2t)$ for $0\leq t\leq1$. These scene parameters have no
+effect on the hero image or the static star layer.
+
+\section{Source map}
+\begin{itemize}
+ \item TypeScript: component mounting, page structure and interaction state.
+ \item JavaScript: WebGL resource lifecycle and build tools.
+ \item GLSL: vertex placement and per-pixel star opacity.
+ \item CSS: composition, responsive layout and fallback texture.
+ \item TeX: the equations and rendering constraints in this document.
+\end{itemize}
+\end{document}
