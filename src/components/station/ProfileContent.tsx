@@ -4,8 +4,9 @@ import { Fragment } from "react";
 import { useLanguage } from "./i18n/LanguageProvider";
 import structure from "./content/profile-structure.json";
 import { InterestIllustration } from "./InterestIllustration";
+import { foldName } from "./foldNames";
 
-type Block = { type: string; key?: string; items?: string[]; rows?: string[][]; blocks?: Block[] };
+type Block = { type: string; source?: string; href?: string; key?: string; items?: string[]; rows?: string[][]; blocks?: Block[] };
 type Section = { title: string; blocks: Block[] };
 export const profile = structure as { sections: Record<string, Section>; closing: string; tagline: string };
 
@@ -24,24 +25,26 @@ export function ProfileBlocks({ blocks, revealItems = false }: { blocks: Block[]
     const id = block.key ?? block.items?.[0] ?? block.rows?.[0]?.[0] ?? String(index);
     if (block.type === "heading") return <h3 key={id}><Inline text={t(block.key!)} /></h3>;
     if (block.type === "subheading") return <h3 className="profile-subheading" key={id}><Inline text={t(block.key!)} /></h3>;
+    if (block.type === "quotation") return <figure className="cited-passage" key={id}>
+      <blockquote dir="auto">{block.items!.map(line => <p key={line}>{t(line)}</p>)}</blockquote>
+      <figcaption><a href={block.href}>{t(block.source!)}</a></figcaption>
+    </figure>;
     if (block.type === "paragraph") return <Fragment key={id}>{t(block.key!).split("\n\n").map((paragraph, paragraphIndex) => <Fragment key={paragraphIndex}>
       {paragraphIndex > 0 ? "\n\n" : null}
-      {block.key === "p140" && paragraphIndex === 1 ?
-        <blockquote className="stargazing-quote" dir="auto"><Inline text={paragraph} /></blockquote> :
-        <p className="profile-copy" dir="auto"><Inline text={paragraph} /></p>}
+      <p className="profile-copy" dir="auto"><Inline text={paragraph} /></p>
     </Fragment>)}</Fragment>;
-    if (block.type === "details" && block.key === "p153") return <details className="profile-fold game-fold" key={id}>
+    if (block.type === "details" && block.key === "p153") return <details className="profile-fold game-fold" key={id} data-reading-fold={foldName(id)}>
       <summary data-reveal="line"><span>{t(block.key)}</span><span className="profile-fold__mark" aria-hidden="true" /></summary>
-      <div className="game-groups">{block.blocks!.filter(item => item.type === "subheading").map((item, i) => <div className="game-group" key={item.key}>
+      <div id={`note-${foldName(id)}`} className="game-groups">{block.blocks!.filter(item => item.type === "subheading").map((item, i) => <div className="game-group" key={item.key}>
         <h4><Inline text={t(item.key!)} /></h4>
         <p dir="auto">{t(block.blocks![i * 2 + 1].key!).split(" · ").map((title, titleIndex) => <Fragment key={title}>
           {titleIndex > 0 ? " · " : null}<span className="game-title">{title}</span>
         </Fragment>)}</p>
       </div>)}</div>
     </details>;
-    if (block.type === "details") return <details className="profile-fold" key={id}>
+    if (block.type === "details") return <details className="profile-fold" key={id} data-reading-fold={foldName(id)}>
       <summary data-reveal="line"><span><Inline text={t(block.key!)} /></span><span className="profile-fold__mark" aria-hidden="true" /></summary>
-      <div className="profile-fold__body"><ProfileBlocks blocks={block.blocks!} /></div>
+      <div id={`note-${foldName(id)}`} className="profile-fold__body"><ProfileBlocks blocks={block.blocks!} /></div>
     </details>;
     if (block.type === "list" && block.items?.[0] === "p127") return <nav className="resource-list" aria-label={t("s093")} key={id}>
       {block.items.map((item, i) => {
@@ -76,9 +79,9 @@ export function ProfileContent({ section, layout = "plain" }: { section: string;
   return <div className={`profile-content profile-content--${layout}`}>
     {preamble.length > 0 && <div className="profile-preamble"><ProfileBlocks blocks={preamble} /></div>}
     <div className={`profile-groups profile-groups--${layout}`}>{groups.map(group => layout === "folds" ?
-      <details className="profile-fold" key={group.key}>
+      <details className="profile-fold" key={group.key} data-reading-fold={foldName(group.key)}>
         <summary data-reveal="line"><span>{t(group.key)}</span><span className="profile-fold__mark" aria-hidden="true" /></summary>
-        <div className="profile-fold__body"><ProfileBlocks blocks={group.blocks} /></div>
+        <div id={`note-${foldName(group.key)}`} className="profile-fold__body"><ProfileBlocks blocks={group.blocks} /></div>
       </details> :
       <article className={group.key === "p021" ? "profile-plans" : "profile-row"} key={group.key} data-profile-group={group.key} data-reveal={group.key === "p021" ? undefined : "line"}>
         {section === "interests" && <InterestIllustration kind={group.key} />}

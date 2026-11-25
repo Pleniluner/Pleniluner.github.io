@@ -2,6 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   output: "export",
+  experimental: { globalNotFound: true },
   outputFileTracingRoot: process.cwd(),
   env: { NEXT_PUBLIC_BASE_PATH: process.env.PAGES_BASE_PATH ?? "" },
   trailingSlash: true,

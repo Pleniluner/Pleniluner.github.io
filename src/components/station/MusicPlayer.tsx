@@ -2,7 +2,7 @@
 import { useLanguage } from "./i18n/LanguageProvider";
 import { asset } from "@/lib/site";
 
-import { type CSSProperties, useRef, useState } from "react";
+import { type CSSProperties, type Ref, useImperativeHandle, useRef, useState } from "react";
 
 const TRACKS = [
   {
@@ -25,6 +25,9 @@ const TRACKS = [
   },
 ] as const;
 
+const NAME_TRACK = 1;
+export type MusicPlayerControls = { playElysiasHeart(): void };
+
 function formatTime(value: number) {
   if (!Number.isFinite(value) || value < 0) return "0:00";
 
@@ -33,61 +36,71 @@ function formatTime(value: number) {
   return `${minutes}:${seconds}`;
 }
 
-export function MusicPlayer() {
+export function MusicPlayer({ ref }: { ref?: Ref<MusicPlayerControls> }) {
   const { t } = useLanguage();
   const audioRef = useRef<HTMLAudioElement>(null);
   const playbackRequestRef = useRef(0);
-  const [activeTrackIndex, setActiveTrackIndex] = useState(1);
+  const [activeTrackIndex, setActiveTrackIndex] = useState(NAME_TRACK);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isReady, setIsReady] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration] = useState<number>(TRACKS[1].duration);
+  const [duration, setDuration] = useState<number>(TRACKS[NAME_TRACK].duration);
   const [error, setError] = useState("");
   const activeTrack = TRACKS[activeTrackIndex];
 
-  const selectTrack = (index: number) => {
-    if (index === activeTrackIndex) return;
+  const play = (audio: HTMLAudioElement) => {
+    const request = ++playbackRequestRef.current;
+    if (audio.error) audio.load();
+    setError("");
+    setIsLoading(true);
+    void audio.play().catch((cause: unknown) => {
+      if (request !== playbackRequestRef.current || audio !== audioRef.current) return;
+      setIsLoading(false);
+      setIsPlaying(false);
+      if (!(cause instanceof DOMException && cause.name === "AbortError")) setError(t("s102"));
+    });
+  };
 
-    playbackRequestRef.current += 1;
-
+  const selectTrack = (index: number, start = false) => {
     const audio = audioRef.current;
-    if (audio) audio.pause();
+    if (!audio) return;
 
+    const next = TRACKS[index];
+    if (audio.getAttribute("src") === next.asset) {
+      if (start && (audio.paused || audio.error)) play(audio);
+      return;
+    }
+
+    const continuePlaying = start || (!audio.paused && !audio.ended);
+    playbackRequestRef.current += 1;
     setActiveTrackIndex(index);
     setIsPlaying(false);
     setIsLoading(false);
     setIsReady(false);
     setCurrentTime(0);
-    setDuration(TRACKS[index].duration);
+    setDuration(next.duration);
     setError("");
+
+    // Change the source and request playback in the same user gesture.
+    audio.src = next.asset;
+    audio.load();
+    if (continuePlaying) play(audio);
   };
 
-  const togglePlayback = async () => {
+  useImperativeHandle(ref, () => ({
+    playElysiasHeart: () => selectTrack(NAME_TRACK, true),
+  }));
+
+  const togglePlayback = () => {
     const audio = audioRef.current;
     if (!audio) return;
-
-    if (!audio.paused) {
+    if (audio.paused || audio.error) {
+      play(audio);
+    } else {
       playbackRequestRef.current += 1;
       audio.pause();
       setIsLoading(false);
-      return;
-    }
-
-    if (isLoading) return;
-
-    const requestId = playbackRequestRef.current + 1;
-    playbackRequestRef.current = requestId;
-
-    try {
-      setError("");
-      setIsLoading(true);
-      await audio.play();
-    } catch {
-      if (requestId !== playbackRequestRef.current) return;
-      setIsLoading(false);
-      setIsPlaying(false);
-      setError(t("s102"));
     }
   };
 
@@ -106,6 +119,7 @@ export function MusicPlayer() {
     <section
       className="music-player"
       id="elysias-heart-player"
+      tabIndex={-1}
       aria-label={t("s103")}
       data-reveal
     >
@@ -181,34 +195,44 @@ export function MusicPlayer() {
       {error ? <span className="music-error" role="status">{error}</span> : null}
 
       <audio
-        key={activeTrack.id}
         ref={audioRef}
-        src={activeTrack.asset}
+        src={TRACKS[NAME_TRACK].asset}
         preload="none"
         onLoadedMetadata={(event) => {
+          if (event.currentTarget.readyState < HTMLMediaElement.HAVE_METADATA) return;
           const nextDuration = event.currentTarget.duration;
           if (Number.isFinite(nextDuration)) setDuration(nextDuration);
           setIsReady(true);
         }}
         onTimeUpdate={(event) => setCurrentTime(event.currentTarget.currentTime)}
-        onCanPlay={() => {
+        onCanPlay={({ currentTarget }) => {
+          if (currentTarget.readyState < HTMLMediaElement.HAVE_FUTURE_DATA) return;
           setIsReady(true);
           setIsLoading(false);
         }}
-        onPlay={() => {
-          setIsPlaying(true);
+        onPlay={({ currentTarget }) => {
+          if (!currentTarget.paused) setIsPlaying(true);
         }}
-        onPlaying={() => setIsLoading(false)}
+        onPlaying={({ currentTarget }) => {
+          if (!currentTarget.paused) setIsLoading(false);
+        }}
         onWaiting={(event) => {
           if (!event.currentTarget.paused) setIsLoading(true);
         }}
-        onPause={() => setIsPlaying(false)}
+        onPause={({ currentTarget }) => {
+          if (currentTarget.paused) {
+            setIsPlaying(false);
+            setIsLoading(false);
+          }
+        }}
         onEnded={(event) => {
+          if (!event.currentTarget.ended) return;
           event.currentTarget.currentTime = 0;
           setCurrentTime(0);
           setIsPlaying(false);
         }}
-        onError={() => {
+        onError={({ currentTarget }) => {
+          if (!currentTarget.error) return;
           playbackRequestRef.current += 1;
           setIsLoading(false);
           setIsReady(false);

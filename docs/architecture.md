@@ -17,6 +17,12 @@
 
 目录和语言菜单共用 `navigation.ts` 识别屏幕里的章节。语言链接携带章节或已选领域标签的锚点。切换语言前，页面在当前浏览器历史记录里保存阅读位置，后退时用它还原正文。周年语录的语言由播放器单独管理。
 
+静态 HTML 按顺序给出五个领域的锚点和正文，脚本加载后才切换为标签。展开的资料以稳定名称写入链接，例如 `?open=cad-bim#note-cad-bim`，译文可以打开同一项。语录在已有对应录音时跟随页面语言，音乐播放器在换曲时沿用原来的播放状态。
+
+手机竖屏把问候语排在辉夜图下，让月面和双眼都留在画面中。页眉在离开首屏后收成一行，回到顶部再显示完整字标。正文里的两幅全幅插画各自使用独立的画作信息折叠项，展开可查看原作和画师主页。
+
+分享卡是 `public/images/station-share-v1.jpg`（1200 × 630）。更新首图或标志后可运行 `node scripts/render-share-card.mjs` 重新生成。题字来自随站分发的 Noto Serif SC 和 Saira，矢量稿位于 `scripts/share-card-type.svg`。Pages 的错误页由 `src/app/global-not-found.tsx` 导出到 `out/404.html`。
+
 ## 图形层的职责
 
 `Starfield.tsx` 只负责挂载与清理。`src/lib/graphics/starfield.js` 分配和释放 WebGL 资源，合并窗口尺寸变化的重绘请求，处理上下文丢失与恢复。两个 `.glsl` 文件独立保存着色器源码，由 webpack 的 `asset/source` 规则读取，不依赖第三方图形库。

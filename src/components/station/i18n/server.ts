@@ -33,13 +33,18 @@ export async function getMessages(locale: Locale): Promise<Record<string,string>
 export async function stationMetadata(locale: Locale): Promise<Metadata> {
   const messages = await getMessages(locale);
   const title = "清月空间站 ~ Pleniluner’s Space Station";
+  const site = new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://pleniluner.com/");
+  const card = {
+    url: new URL(asset("images/station-share-v1.jpg"), site.origin),
+    width: 1200, height: 630, type: "image/jpeg", alt: title,
+  };
   return {
-    metadataBase: new URL("https://pleniluner.com"), title, description: messages.s134,
+    metadataBase: site, title, description: messages.s134,
     authors: [{name: "Pleniluner", url: "https://github.com/Pleniluner"}],
     alternates: { canonical: localeHref(locale), languages: Object.fromEntries([...locales.map(item => [item.id, localeHref(item.id)]), ["x-default", localeHref("zh-CN")]]) },
     icons: {icon: asset("icons/icon-32.png"), apple: asset("icons/icon-180.png")},
-    openGraph: {title, description: messages.s134, type: "website", locale: locale.replace("-", "_"), images: [asset("images/kaguya.png")]},
-    twitter: {card: "summary_large_image", title, description: messages.s134, images: [asset("images/kaguya.png")]},
+    openGraph: {title, description: messages.s134, type: "website", url: localeHref(locale), locale: locale.replace("-", "_"), images: [card]},
+    twitter: {card: "summary_large_image", title, description: messages.s134, images: [{ url: card.url, alt: card.alt }]},
     robots: {index: true, follow: true},
   };
 }

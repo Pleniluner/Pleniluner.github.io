@@ -1,0 +1,15 @@
+.page {
+  box-sizing: border-box; min-block-size: 100vh; min-block-size: 100svh;
+  display: grid; align-items: center; padding: clamp(24px, 7vw, 90px);
+  background: #101617; color: #edf1e9;
+  font: 400 1rem/1.55 "Segoe UI", "Microsoft YaHei", system-ui, sans-serif;
+}
+.inner { width: min(100%, 62rem); margin-inline: auto; }
+.brand { display: inline-flex; align-items: center; gap: 12px; color: inherit; font-weight: 650; text-decoration: none; }
+.brand svg { width: 40px; height: 40px; }
+.code { margin: clamp(38px, 8vh, 72px) 0 0; color: #b6c5ba; font-size: clamp(64px, 13vw, 136px); font-weight: 550; letter-spacing: -.06em; line-height: .95; }
+.page h1 { margin: 15px 0 30px; font-size: clamp(25px, 4vw, 48px); font-weight: 600; line-height: 1.25; }
+.links { display: flex; flex-wrap: wrap; gap: 12px 22px; align-items: center; }
+.links a { display: inline-flex; align-items: center; min-block-size: 44px; box-sizing: border-box; color: #e5ece2; text-underline-offset: .24em; }
+.links a:first-child { padding: 8px 20px; color: #121817; background: #d8eb51; font-weight: 600; text-decoration: none; }
+.page a:focus-visible { outline: 2px solid #d8eb51; outline-offset: 4px; }

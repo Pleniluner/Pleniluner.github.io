@@ -1,0 +1,5 @@
+.recording {
+  margin-block: 0 16px;
+  color: var(--muted);
+  font: 500 14px/1.5 var(--font-reading);
+}

@@ -105,19 +105,19 @@ html:has(.station-home) { scroll-behavior: auto; }
     animation: station-art-settle var(--motion-draw) var(--ef-snap) backwards;
   }
 
-  .station-home .field-tabs.is-visible button {
+  .station-home .field-tabs.is-visible .field-tab {
     animation: station-settle var(--motion-entry) var(--ef-snap) backwards;
   }
-  .station-home .field-tabs.is-visible button:nth-child(2) { animation-delay: 38ms; }
-  .station-home .field-tabs.is-visible button:nth-child(3) { animation-delay: 76ms; }
-  .station-home .field-tabs.is-visible button:nth-child(4) { animation-delay: 114ms; }
-  .station-home .field-tabs.is-visible button:nth-child(5) { animation-delay: 152ms; }
+  .station-home .field-tabs.is-visible .field-tab:nth-child(2) { animation-delay: 38ms; }
+  .station-home .field-tabs.is-visible .field-tab:nth-child(3) { animation-delay: 76ms; }
+  .station-home .field-tabs.is-visible .field-tab:nth-child(4) { animation-delay: 114ms; }
+  .station-home .field-tabs.is-visible .field-tab:nth-child(5) { animation-delay: 152ms; }
   .station-home .fields-panel[data-backward] { --panel-from: calc(-1 * var(--motion-inline)); }
-  .station-home .field-panel:not([hidden]) > .field-heading,
-  .station-home .field-panel:not([hidden]) > .profile-content {
+  .station-home .fields-panel[data-tabs-ready] .field-panel:not([hidden]) > .field-heading,
+  .station-home .fields-panel[data-tabs-ready] .field-panel:not([hidden]) > .profile-content {
     animation: station-panel 260ms var(--ef-snap) backwards;
   }
-  .station-home .field-panel:not([hidden]) > .profile-content { animation-delay: 38ms; }
+  .station-home .fields-panel[data-tabs-ready] .field-panel:not([hidden]) > .profile-content { animation-delay: 38ms; }
 
   .station-home .quote-play > span[lang] {
     animation: station-settle 240ms var(--ef-snap) backwards;

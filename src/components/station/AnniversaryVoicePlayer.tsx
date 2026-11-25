@@ -1,5 +1,6 @@
 "use client";
 import { useLanguage } from "./i18n/LanguageProvider";
+import type { Locale } from "./i18n/locales";
 import { asset } from "@/lib/site";
 import zh from "./i18n/messages/zh-CN.json";
 import en from "./i18n/messages/en.json";
@@ -7,51 +8,67 @@ import ja from "./i18n/messages/ja.json";
 import ko from "./i18n/messages/ko.json";
 
 import { useRef, useState } from "react";
+import styles from "./audio.module.css";
 
 const VOICES = [
   {
     id: "zh",
+    lang: "zh-CN",
+    text: zh,
     label: "s109",
     duration: "0:17",
     asset: asset("audio/anniversary-zh.mp3"),
   },
   {
     id: "en",
+    lang: "en",
+    text: en,
     label: "s112",
     duration: "0:19",
     asset: asset("audio/anniversary-en.mp3"),
   },
   {
     id: "ja",
+    lang: "ja",
+    text: ja,
     label: "s110",
     duration: "0:22",
     asset: asset("audio/anniversary-ja.mp3"),
   },
   {
     id: "ko",
+    lang: "ko",
+    text: ko,
     label: "s111",
     duration: "0:20",
     asset: asset("audio/anniversary-ko.mp3"),
   },
 ] as const;
+type Voice = (typeof VOICES)[number];
+
+// These pages have translated quotations but no recording in the page language.
+const recordingLabels: Partial<Record<Locale, string>> = {
+  ar: "لغة التسجيل", de: "Sprache der Aufnahme", es: "Idioma de la grabación",
+  fr: "Langue de l’enregistrement", it: "Lingua della registrazione",
+  pt: "Idioma da gravação", ru: "Язык записи",
+};
 
 export function AnniversaryVoicePlayer() {
-  const { t } = useLanguage();
+  const { t, locale } = useLanguage();
   const audioRef = useRef<HTMLAudioElement>(null);
-  const [activeVoiceIndex, setActiveVoiceIndex] = useState(0);
+  const pageVoice = VOICES.find(voice => voice.id === locale.split("-")[0]);
+  const [chosenVoice, setChosenVoice] = useState<Voice | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [error, setError] = useState("");
-  const [quoteIndex, setQuoteIndex] = useState<number | null>(null);
-  const activeVoice = VOICES[activeVoiceIndex];
-  const quote = quoteIndex === null ? { s074: t("s074"), s075: t("s075") } : [zh, en, ja, ko][quoteIndex];
-  const quoteLanguage = quoteIndex === null ? undefined : ["zh-CN", "en", "ja", "ko"][quoteIndex];
+  const activeVoice = chosenVoice ?? pageVoice ?? VOICES[0];
+  const quote = chosenVoice && chosenVoice !== pageVoice ? chosenVoice.text : { s074: t("s074"), s075: t("s075") };
+  const quoteLanguage = chosenVoice ? (chosenVoice === pageVoice ? locale : chosenVoice.lang) : undefined;
 
-  const selectVoice = (index: number) => {
-    setQuoteIndex(index);
-    if (index === activeVoiceIndex) return;
+  const selectVoice = (voice: Voice) => {
+    setChosenVoice(voice);
+    if (voice === activeVoice) return;
 
     audioRef.current?.pause();
-    setActiveVoiceIndex(index);
     setIsPlaying(false);
     setError("");
   };
@@ -81,19 +98,25 @@ export function AnniversaryVoicePlayer() {
       <div className="quote-voice-controls">
         <span className="quote-voice-status" aria-hidden="true"><i /><i /><i /><i /><span>{activeVoice.duration}</span></span>
         <div className="voice-languages" role="group" aria-label={t("s117")}>
-          {VOICES.map((voice, index) => (
+          {VOICES.map(voice => (
             <button
-              className={index === activeVoiceIndex ? "is-active" : ""}
+              className={voice === activeVoice ? "is-active" : ""}
               type="button"
               key={voice.id}
-              onClick={() => selectVoice(index)}
-              aria-pressed={index === activeVoiceIndex}
+              onClick={() => selectVoice(voice)}
+              aria-pressed={voice === activeVoice}
             >
               <span>{t(voice.label)}</span>
             </button>
           ))}
         </div>
       </div>
+
+      {!pageVoice && (
+        <p className={styles.recording} aria-live="polite">
+          {recordingLabels[locale] ?? t("s116")} · {t(activeVoice.label)}
+        </p>
+      )}
 
       <button
         className="design-credo-statement quote-play"

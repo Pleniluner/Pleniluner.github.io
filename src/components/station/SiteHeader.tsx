@@ -7,7 +7,7 @@ import { rememberReadingPosition, useReadingPosition } from "./navigation";
 const links = [["top","s055"],["about","s058"],["now","s077"],["computing","s143"],["interests","s083"],["gear","s085"],["contact","s095"]];
 export function SiteHeader() {
   const { locale, t } = useLanguage();
-  const { headerRef, anchor, directory } = useReadingPosition();
+  const { headerRef, anchor, directory, openFolds } = useReadingPosition();
   const [panel, setPanel] = useState<"language" | "directory" | null>(null);
   const controls = useRef<HTMLDivElement>(null);
   const languageButton = useRef<HTMLButtonElement>(null);
@@ -69,7 +69,7 @@ export function SiteHeader() {
       </div>
       <div id="header-language" className="header-popover header-language" hidden={panel !== "language"} inert={panel !== "language"}>
         <div className="language-grid" role="group" aria-label={t("s130")}>{locales.map(item =>
-          <a key={item.id} href={`${localeHref(item.id)}#${anchor}`} hrefLang={item.id} lang={item.id} dir={item.dir}
+          <a key={item.id} href={`${localeHref(item.id)}${openFolds ? `?open=${openFolds}` : ""}#${anchor}`} hrefLang={item.id} lang={item.id} dir={item.dir}
             aria-current={locale === item.id ? "page" : undefined}
             onClick={event => chooseLanguage(event, item.id)}>
             <span>{item.label}</span><span aria-hidden="true">{locale === item.id ? "✓" : ""}</span>

@@ -38,7 +38,8 @@ export function IntroLoader() {
       if (skipsForAnchor && !restoringScroll) window.requestAnimationFrame(() => {
         let id = window.location.hash.slice(1);
         try { id = decodeURIComponent(id); } catch { /* Leave malformed anchors inert. */ }
-        document.getElementById(id)?.scrollIntoView({ block: "start", behavior: "instant" });
+        const target = document.getElementById(id);
+        if (target && !target.closest("#fields")) target.scrollIntoView({ block: "start", behavior: "instant" });
       });
       return () => { active = false; delete root.dataset.stationIntro; };
     }

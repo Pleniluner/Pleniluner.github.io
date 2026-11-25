@@ -72,3 +72,28 @@ test('local fonts, audio and domain metadata are present',async()=>{
  for(const name of ['name-story-01','name-story-02','anniversary-zh','anniversary-en','anniversary-ja','anniversary-ko'])assert.ok((await stat(join(root,`audio/${name}.mp3`))).size>150000);
  assert.equal((await readFile(join(root,'CNAME'),'utf8')).trim(),'pleniluner.com');
 });
+
+test('shared pages expose their reading paths and share card before JavaScript runs', async () => {
+  const sharePath = '/images/station-share-v1.jpg';
+  const image = await sharp(join(root, sharePath.slice(1))).metadata();
+  assert.deepEqual([image.format, image.width, image.height], ['jpeg', 1200, 630]);
+  for (const route of Object.keys(routes)) {
+    const source = (await readFile(join(root, route, 'index.html'), 'utf8')).replace(/<script\b[^>]*>[\s\S]*?<\/script>/g, '');
+    const card = source.match(/property="og:image" content="([^"]+)"/)?.[1];
+    assert.ok(card, `missing share card on /${route}`);
+    assert.equal(new URL(card).pathname, base + sharePath);
+    assert.equal(source.match(/name="twitter:image" content="([^"]+)"/)?.[1], card);
+    for (const subject of ['computing', 'tools', 'architecture', 'learning', 'radio']) {
+      const panel = source.match(new RegExp(`<[^>]+ id="panel-${subject}"[^>]*>`));
+      assert.ok(panel, `missing ${subject} on /${route}`);
+      assert.doesNotMatch(panel[0], /\shidden(?:[\s=>])/, `hidden static panel on /${route}`);
+      assert.ok(source.includes(`href="#${subject}"`) && source.includes(`id="${subject}"`));
+    }
+    assert.ok(source.includes('https://www.pixiv.net/artworks/136960564'));
+    assert.ok(source.includes('https://www.pixiv.net/artworks/104450545'));
+    assert.match(source, /<figure class="cited-passage">[\s\S]*?<blockquote[\s\S]*?<figcaption><a href="#anniversary-quote">/);
+  }
+  const missing = (await readFile(join(root, '404.html'), 'utf8')).replace(/<script\b[^>]*>[\s\S]*?<\/script>/g, '');
+  assert.ok(missing.includes('这个页面没有找到') && missing.includes(`href="${base}/#now"`));
+  assert.match(missing, /name="robots" content="noindex, follow"/);
+});

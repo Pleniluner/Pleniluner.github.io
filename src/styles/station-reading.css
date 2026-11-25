@@ -1,0 +1,37 @@
+.station-home .station-plate { margin: 0; }
+.station-home .station-plate figcaption {
+  width: min(1160px, calc(100% - 48px)); margin-inline: auto; text-align: end;
+  font: 400 .875rem/1.55 var(--font-reading);
+}
+.station-home .station-plate__credit summary {
+  width: fit-content; margin-inline-start: auto; padding-block: 13px 10px;
+  color: var(--ef-muted); cursor: pointer;
+}
+.station-home .station-plate__credit summary::marker { color: var(--ef-signal); font-size: .8em; }
+.station-home .station-plate__credit p {
+  display: flex; flex-wrap: wrap; align-items: baseline; justify-content: end;
+  gap: .35em 1em; margin: 0; padding-block: 3px 10px;
+}
+.station-home .station-plate__credit cite { font-style: normal; color: var(--ef-ink); }
+.station-home .station-plate__credit a, .station-home .cited-passage a {
+  color: var(--ef-muted); text-decoration: underline; text-decoration-color: var(--ef-rule); text-underline-offset: .24em;
+}
+.station-home .station-plate__credit a:hover, .station-home .cited-passage a:hover { color: var(--ef-signal); }
+.station-home .cited-passage {
+  border-inline-start: 2px solid var(--ef-rule); padding-inline-start: 19px; margin: 20px 0;
+}
+.station-home .cited-passage blockquote { margin: 0; color: var(--ef-ink); }
+.station-home .cited-passage blockquote p { margin: 0; font: inherit; }
+.station-home .cited-passage blockquote p + p { margin-top: .45em; }
+.station-home .cited-passage figcaption { margin-top: .65em; font: 400 .85rem/1.5 var(--font-reading); }
+.station-home .contact-mail__row { display: flex; align-items: center; justify-content: center; gap: 5px; }
+.station-home .contact-mail__row .connect-email { margin: 0; min-width: 0; overflow-wrap: anywhere; }
+.station-home .contact-mail__copy {
+  display: grid; place-items: center; min-width: 44px; min-height: 44px; flex-shrink: 0; border: 0;
+  color: var(--ef-muted); background: transparent; cursor: pointer;
+}
+.station-home .contact-mail__copy:is(:hover, :focus-visible) { color: var(--ef-signal); }
+.station-home .contact-mail__status {
+  min-block-size: 1.55em; max-width: 42ch; margin: 0 auto;
+  color: var(--ef-muted); font: 400 .85rem/1.55 var(--font-reading); text-align: center;
+}

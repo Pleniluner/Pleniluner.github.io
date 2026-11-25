@@ -8,7 +8,7 @@ const json=async path=>JSON.parse(await readFile(path,'utf8'));
 const en=await json(`${folder}/en.json`);
 
 test('twelve profiles preserve the complete content, translations and reference links',async()=>{
- assert.equal(Object.keys(en).length,192);
+ assert.equal(Object.keys(en).length,193);
  for(let index=190;index<=196;index++)assert.ok(!(`p${index}` in en),`removed mobile devices p${index}`);
  for(const lang of languages){
   const data=await json(`${folder}/${lang}.json`);

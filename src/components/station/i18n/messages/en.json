@@ -139,5 +139,11 @@
   "s138": "ANDROID\n& SOFTWARE",
   "s139": "AMATEUR\nRADIO",
   "s140": "ASTRONOMY\n& SOUND",
-  "s143": "Fields"
+  "s143": "Fields",
+  "artworkInfo": "Artwork information",
+  "starlightAlt": "Astgenne raises her arm inside golden orbits against a deep blue star field.",
+  "musicRoomAlt": "A girl sits by the window. Sunlight catches the reel-to-reel tape recorder and copper-coloured horns beside her.",
+  "copyEmail": "Copy email address",
+  "emailCopied": "Email address copied",
+  "emailSelect": "Email address selected. You can copy it manually."
 }

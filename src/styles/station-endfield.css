@@ -124,7 +124,7 @@
 /* The five destinations share one compact baseline instead of tall posters. */
 .station-home .fields-panel.section { padding-top: 260px; }
 .station-home .field-tabs { gap: 8px; margin-bottom: 40px; }
-.station-home .field-tabs button {
+.station-home .field-tabs .field-tab {
   min-height: 224px;
   padding: 22px 20px 18px;
   border: 0;
@@ -134,7 +134,7 @@
   color: var(--ef-ink);
   transition: color 200ms, border-color 200ms, background-color 200ms;
 }
-.station-home .field-tabs button::before {
+.station-home .field-tabs .field-tab::before {
   background: var(--ef-signal);
   transform: translateX(var(--motion-wipe-start, -101%));
   transition: transform 240ms var(--ef-snap);
@@ -156,19 +156,19 @@
   color: var(--ef-muted);
   opacity: 1;
 }
-.station-home .field-tabs button[aria-selected="true"] { background: #25312d; border-color: var(--ef-signal); }
-.station-home .field-tabs button[aria-selected="true"] .field-card-title { color: var(--ef-ink); }
-.station-home .field-tabs button[aria-selected="true"] .field-card-index { background: var(--ef-signal); color: #101617; }
-.station-home .field-tabs button:focus-visible { outline: 2px solid var(--ef-ink); outline-offset: -5px; }
+.station-home .field-tabs .field-tab[aria-selected="true"] { background: #25312d; border-color: var(--ef-signal); }
+.station-home .field-tabs .field-tab[aria-selected="true"] .field-card-title { color: var(--ef-ink); }
+.station-home .field-tabs .field-tab[aria-selected="true"] .field-card-index { background: var(--ef-signal); color: #101617; }
+.station-home .field-tabs .field-tab:focus-visible { outline: 2px solid var(--ef-ink); outline-offset: -5px; }
 @media (hover: hover) {
   .station-home .header-control:hover,
   .station-home .header-popover a:hover { background: var(--ef-signal); color: #101617; }
-  .station-home .field-tabs button:hover { color: #101617; border-color: var(--ef-signal); }
-  .station-home .field-tabs button:hover::before { transform: translateX(0); }
-  .station-home .field-tabs button:hover .field-card-symbol { --field-accent: currentColor; }
-  .station-home .field-tabs button:hover .field-card-symbol,
-  .station-home .field-tabs button:hover .field-card-title { transform: none; color: #101617; }
-  .station-home .field-tabs button:hover .field-card-index { background: #10161712; color: #101617; opacity: 1; }
+  .station-home .field-tabs .field-tab:hover { color: #101617; border-color: var(--ef-signal); }
+  .station-home .field-tabs .field-tab:hover::before { transform: translateX(0); }
+  .station-home .field-tabs .field-tab:hover .field-card-symbol { --field-accent: currentColor; }
+  .station-home .field-tabs .field-tab:hover .field-card-symbol,
+  .station-home .field-tabs .field-tab:hover .field-card-title { transform: none; color: #101617; }
+  .station-home .field-tabs .field-tab:hover .field-card-index { background: #10161712; color: #101617; opacity: 1; }
 }
 @media (max-width: 700px) {
   .station-home .header-control { padding: 9px 12px; }
@@ -176,19 +176,48 @@
   .station-home .compact-header nav.header-directory { inset-inline-end: 0; width: min(340px, calc(100vw - 64px)); }
   .station-home .fields-panel.section { padding-top: 200px; }
   .station-home .field-tabs { gap: 8px; margin-bottom: 28px; }
-  .station-home .field-tabs button { min-height: 156px; padding: 16px; }
+  .station-home .field-tabs .field-tab { min-height: 156px; padding: 16px; }
   .station-home .field-card-symbol { width: 36px; height: 36px; margin-block: 0 12px; }
   .station-home .field-card-title { font-size: 16px; }
-  .station-home .field-tabs button:last-child { grid-column: 1 / -1; flex-direction: row; align-items: center; gap: 16px; min-height: 88px; }
-  .station-home .field-tabs button:last-child .field-card-symbol { flex-shrink: 0; margin: 0; }
-  .station-home .field-tabs button:last-child .field-card-heading { flex: 1; }
-  .station-home .field-tabs button:last-child .field-card-index { flex-shrink: 0; margin-top: 0; }
+  .station-home .field-tabs .field-tab:last-child { grid-column: 1 / -1; flex-direction: row; align-items: center; gap: 16px; min-height: 88px; }
+  .station-home .field-tabs .field-tab:last-child .field-card-symbol { flex-shrink: 0; margin: 0; }
+  .station-home .field-tabs .field-tab:last-child .field-card-heading { flex: 1; }
+  .station-home .field-tabs .field-tab:last-child .field-card-index { flex-shrink: 0; margin-top: 0; }
   .station-home .interests .profile-row > h3 { font-size: 21px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .station-home .header-control,
   .station-home .header-control__chevron,
   .station-home .header-popover a,
-  .station-home .field-tabs button,
-  .station-home .field-tabs button::before { transition: none; }
+  .station-home .field-tabs .field-tab,
+  .station-home .field-tabs .field-tab::before { transition: none; }
+}
+
+/* At chapter depth the brand and both menus share one touch-height row. */
+@media (max-width: 700px) {
+  .station-home.is-reading .compact-header {
+    display: flex;
+    min-height: 0;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    padding: calc(4px + env(safe-area-inset-top)) max(12px, env(safe-area-inset-right)) 4px max(12px, env(safe-area-inset-left));
+  }
+  .station-home.is-reading .compact-header .wordmark {
+    flex: 0 1 auto;
+    width: auto;
+    min-height: 44px;
+    gap: 6px;
+  }
+  .station-home.is-reading .compact-header .station-logo { width: 28px; height: 28px; }
+  .station-home.is-reading .compact-header .station-name { font-size: clamp(16px, 4.5vw, 19px); }
+  .station-home.is-reading .compact-header .station-identity small { display: none; }
+  .station-home.is-reading .header-controls__bar { gap: 4px; }
+  .station-home.is-reading .header-control { min-width: 44px; min-height: 44px; padding-inline: 8px; gap: 4px; font-size: 13px; }
+  .station-home.is-reading :is(.header-control__chevron, .header-control__menu) { width: 16px; height: 16px; flex-basis: 16px; }
+  .station-home.is-reading .compact-header :is(.header-popover, nav.header-directory) {
+    top: calc(100% + 8px);
+    width: min(340px, calc(100vw - 24px));
+    max-height: calc(100svh - 64px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+  }
 }

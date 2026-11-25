@@ -539,6 +539,19 @@
           "key": "p140"
         },
         {
+          "type": "quotation",
+          "items": [
+            "s074",
+            "s075"
+          ],
+          "source": "s076",
+          "href": "#anniversary-quote"
+        },
+        {
+          "type": "paragraph",
+          "key": "p205"
+        },
+        {
           "type": "heading",
           "key": "p141"
         },

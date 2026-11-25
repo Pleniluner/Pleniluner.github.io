@@ -1,10 +1,9 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useReducer, useRef, type KeyboardEvent } from "react";
+import { useLayoutEffect, useReducer, useRef, type KeyboardEvent } from "react";
 import { useLanguage } from "./i18n/LanguageProvider";
 import { ProfileContent, profile } from "./ProfileContent";
 import { SectionArtwork } from "./SectionArtwork";
-import { isHistoryTraversal } from "./navigation";
 
 const subjects = [
   { id: "computing", section: "computing", layout: "folds" },
@@ -14,12 +13,12 @@ const subjects = [
   { id: "radio", section: "radio", layout: "plain" },
 ] as const;
 type SubjectId = typeof subjects[number]["id"];
-type Selection = { id: SubjectId; backward: boolean };
+type Selection = { id: SubjectId; backward: boolean; enhanced: boolean };
 
 function changeSubject(previous: Selection, id: SubjectId): Selection {
-  if (previous.id === id) return previous;
+  if (previous.enhanced && previous.id === id) return previous;
   const index = (key: SubjectId) => subjects.findIndex(subject => subject.id === key);
-  return { id, backward: index(id) < index(previous.id) };
+  return { id, backward: index(id) < index(previous.id), enhanced: true };
 }
 
 function FieldSymbol({ id }: { id: SubjectId }) {
@@ -65,12 +64,11 @@ function FieldSymbol({ id }: { id: SubjectId }) {
 
 export function ExpertiseDeck() {
   const { t, locale } = useLanguage();
-  const [{ id: active, backward }, setActive] = useReducer(changeSubject, { id: "computing", backward: false });
+  const [{ id: active, backward, enhanced }, setActive] = useReducer(changeSubject,
+    { id: "computing", backward: false, enhanced: false });
   const frame = useRef<HTMLElement>(null);
-  const tabs = useRef<(HTMLButtonElement | null)[]>([]);
+  const tabs = useRef<(HTMLAnchorElement | null)[]>([]);
   const readingPosition = useRef<number | null>(null);
-  const selectedByHash = useRef(false);
-  const previousHash = useRef<string | null>(null);
 
   useLayoutEffect(() => {
     if (readingPosition.current === null) return;
@@ -78,27 +76,26 @@ export function ExpertiseDeck() {
     readingPosition.current = null;
   }, [active]);
 
-  useEffect(() => {
-    const followAnchor = (scroll: boolean) => {
-      const changed = window.location.hash !== previousHash.current;
-      previousHash.current = window.location.hash;
-      const subject = subjects.find(item => `#${item.id}` === window.location.hash);
-      if (!subject) return;
-      selectedByHash.current = true;
-      setActive(subject.id);
-      if (changed && scroll) {
-        requestAnimationFrame(() => {
-          frame.current?.scrollIntoView({ block: "start" });
-          selectedByHash.current = false;
-        });
-      } else {
-        selectedByHash.current = false;
-      }
-    };
-    followAnchor(!isHistoryTraversal());
-    const onHashChange = () => followAnchor(true);
+  useLayoutEffect(() => {
+    let scrollFrame = 0;
+    function followAnchor(initial: boolean) {
+      const target = document.getElementById(window.location.hash.slice(1));
+      const id = target?.closest<HTMLElement>("[data-subject]")?.dataset.subject ?? target?.id;
+      const subject = subjects.find(item => item.id === id);
+      if (subject || initial) setActive(subject?.id ?? "computing");
+      cancelAnimationFrame(scrollFrame);
+      if (initial || !subject || !target) return;
+      scrollFrame = requestAnimationFrame(() => {
+        const destination = target.id === subject.id ? frame.current : target;
+        destination?.scrollIntoView({ block: "start", behavior: "instant" });
+      });
+    }
+    // The browser already follows links to the static headings before hydration.
+    followAnchor(true);
+    const onHashChange = () => followAnchor(false);
     window.addEventListener("hashchange", onHashChange);
     return () => {
+      cancelAnimationFrame(scrollFrame);
       window.removeEventListener("hashchange", onHashChange);
     };
   }, []);
@@ -106,16 +103,17 @@ export function ExpertiseDeck() {
   const select = (id: SubjectId) => {
     window.history.replaceState(window.history.state, "", `#${id}`);
     if (id === active) return;
-    if (!selectedByHash.current) readingPosition.current = window.scrollY;
+    readingPosition.current = window.scrollY;
     setActive(id);
   };
-  const navigateTabs = (event: KeyboardEvent<HTMLButtonElement>, index: number) => {
+  const navigateTabs = (event: KeyboardEvent<HTMLAnchorElement>, index: number) => {
     const direction = locale === "ar" ? -1 : 1;
     let next = index;
     if (event.key === "ArrowRight") next = (index + direction + subjects.length) % subjects.length;
     else if (event.key === "ArrowLeft") next = (index - direction + subjects.length) % subjects.length;
     else if (event.key === "Home") next = 0;
     else if (event.key === "End") next = subjects.length - 1;
+    else if (event.key === " ") next = index;
     else return;
     event.preventDefault();
     select(subjects[next].id);
@@ -123,28 +121,39 @@ export function ExpertiseDeck() {
   };
 
   return <section ref={frame} id="fields" className="section fields-panel illustrated-section"
-    data-nav="computing" data-reading-anchor={active} data-backward={backward || undefined} aria-labelledby={`${active}-heading`}>
+    data-nav="computing" data-reading-anchor={active} data-backward={backward || undefined}
+    data-tabs-ready={enhanced || undefined} aria-label={t("s143")}>
     <SectionArtwork src="images/fields.jpg" />
     <div className="panel-frame fields-frame">
-      <div className="field-tabs" role="tablist" aria-label={t("s131")} data-reveal="deck">
-        {subjects.map((subject, index) => <button
-          key={subject.id} type="button" role="tab" id={subject.id}
-          aria-controls={`panel-${subject.id}`} aria-selected={active === subject.id}
-          tabIndex={active === subject.id ? 0 : -1}
+      <div className="field-tabs" role={enhanced ? "tablist" : "navigation"} aria-label={t("s131")} data-reveal="deck">
+        {subjects.map((subject, index) => <a
+          key={subject.id} className="field-tab" href={`#${subject.id}`} id={enhanced ? subject.id : undefined}
+          role={enhanced ? "tab" : undefined} aria-controls={enhanced ? `panel-${subject.id}` : undefined}
+          aria-selected={enhanced ? active === subject.id : undefined}
+          tabIndex={enhanced ? (active === subject.id ? 0 : -1) : undefined}
           ref={node => { tabs.current[index] = node; }}
-          onClick={() => select(subject.id)} onKeyDown={event => navigateTabs(event, index)}
+          onClick={event => {
+            if (!enhanced || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+            event.preventDefault();
+            select(subject.id);
+          }}
+          onKeyDown={enhanced ? event => navigateTabs(event, index) : undefined}
           aria-label={t(profile.sections[subject.section].title)}
         >
           <span className="field-card-index" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
           <span className="field-card-symbol"><FieldSymbol id={subject.id} /></span>
           <span className="field-card-heading"><span className="field-card-title">{t(profile.sections[subject.section].title)}</span><i aria-hidden="true" /></span>
-        </button>)}
+        </a>)}
       </div>
       {subjects.map(subject => <div
-        key={subject.id} id={`panel-${subject.id}`} className="field-panel" role="tabpanel"
-        aria-labelledby={subject.id} tabIndex={0} hidden={active !== subject.id}
+        key={subject.id} id={`panel-${subject.id}`} className="field-panel" data-subject={subject.id}
+        role={enhanced ? "tabpanel" : "region"}
+        aria-labelledby={enhanced ? subject.id : `${subject.id}-heading`} tabIndex={enhanced ? 0 : undefined}
+        hidden={enhanced && active !== subject.id}
       >
-        <header className="section-header field-heading"><h2 id={`${subject.id}-heading`}>{t(profile.sections[subject.section].title)}</h2></header>
+        <header id={enhanced ? undefined : subject.id} className="section-header field-heading">
+          <h2 id={`${subject.id}-heading`}>{t(profile.sections[subject.section].title)}</h2>
+        </header>
         <ProfileContent section={subject.section} layout={subject.layout} />
       </div>)}
     </div>

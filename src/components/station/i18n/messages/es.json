@@ -139,5 +139,11 @@
   "s138": "ANDROID\nY SOFTWARE",
   "s139": "RADIOAFICIÓN",
   "s140": "ASTRONOMÍA\nY SONIDO",
-  "s143": "Ámbitos"
+  "s143": "Ámbitos",
+  "artworkInfo": "Sobre la ilustración",
+  "starlightAlt": "Astgenne alza un brazo entre órbitas doradas ante un cielo azul oscuro lleno de estrellas.",
+  "musicRoomAlt": "Una joven está sentada junto a la ventana. El sol ilumina una grabadora de bobinas y unas bocinas de color cobre a su lado.",
+  "copyEmail": "Copiar dirección de correo",
+  "emailCopied": "Dirección de correo copiada",
+  "emailSelect": "La dirección está seleccionada. Puedes copiarla manualmente."
 }

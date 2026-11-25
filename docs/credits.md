@@ -2,6 +2,8 @@
 
 网站的作者与维护者为 [Pleniluner](https://github.com/Pleniluner)。网站代码沿用原有 MIT 许可；该许可不改变插画、音乐、游戏语音和字体各自的权利归属。页面中的原作品来源链接继续保留。
 
+周年语录插画 [《🌟》](https://www.pixiv.net/artworks/136960564) 由 [蒼響Verniy](https://www.pixiv.net/users/16186292) 创作。「手边正在做的事」的插画 [《靠》](https://www.pixiv.net/artworks/104450545) 由 [XilmO@夕末](https://www.pixiv.net/users/19389056) 创作。两幅图下的「画作信息」也可直接打开原作和画师主页。
+
 - 开屏时间轴使用 RhineLabUI / rhine-lab-art 的 MIT 许可代码，来源提交、说明及完整许可证位于 `src/components/station/rhine-timing/`。
 - Saira、Courier Prime、Noto Serif SC 的字体文件与 OFL 许可位于 `src/assets/fonts/`。Saira 来自 Endfield UI skill 所附的字体；字体的许可说明也保留在 `public/licenses/`。
 - 布局沿用站点现有的 Endfield 风格控件与自有圆弧标志。
