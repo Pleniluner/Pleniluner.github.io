@@ -23,13 +23,44 @@ function changeSubject(previous: Selection, id: SubjectId): Selection {
 }
 
 function FieldSymbol({ id }: { id: SubjectId }) {
-  return <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinejoin="miter" aria-hidden="true">
-    {id === "computing" && <><rect x="16" y="16" width="32" height="32" /><path d="m27 25-7 7 7 7m10-14 7 7-7 7m-2-18-6 22M23 8v8m9-8v8m9-8v8M23 48v8m9-8v8m9-8v8M8 23h8m-8 9h8m-8 9h8m32-18h8m-8 9h8m-8 9h8" /></>}
-    {id === "tools" && <><path d="M8 15h48v37H8zM8 25h48M14 20h3m4 0h3m4 0h3M20 33l-5 5 5 5m5 0h10M44 6v12m-6-6h12" /><circle cx="44" cy="38" r="5" /></>}
-    {id === "architecture" && <><path d="M7 54h50M12 54V25L32 9l20 16v29M7 25h50M20 54V34a12 12 0 0 1 24 0v20M27 54V38a5 5 0 0 1 10 0v16M32 4v10" /></>}
-    {id === "learning" && <><path d="M9 51h47M14 56V9M14 45c8 0 7-28 18-28s11 28 22 28M22 9h34M48 5v8" /><circle cx="32" cy="17" r="3" /><path d="M32 24v27" strokeDasharray="3 4" /></>}
-    {id === "radio" && <><path d="M32 30v24M22 54h20M17 12a23 23 0 0 0 0 34m30-34a23 23 0 0 1 0 34M23 19a13 13 0 0 0 0 20m18-20a13 13 0 0 1 0 20" /><circle cx="32" cy="27" r="4" /></>}
-  </svg>;
+  return (
+    <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="1.9"
+      strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
+      {id === "computing" && <>
+        <path className="field-symbol__detail" d="M17 5v5m7-5v5m7-5v5M17 38v5m7-5v5m7-5v5M5 17h5m-5 7h5m-5 7h5m28-14h5m-5 7h5m-5 7h5" />
+        <path className="field-symbol__face" d="M14 10h18l6 6v17l-5 5H15l-5-5V14Z" />
+        <path d="m19 20-4 4 4 4m10-8 4 4-4 4" />
+        <path className="field-symbol__accent" d="m25.6 18.5-3.2 11" />
+      </>}
+      {id === "tools" && <>
+        <path className="field-symbol__face" d="M7 9h29l6 6v21l-3 3H8l-3-3V11Z" />
+        <path className="field-symbol__detail" d="M6 18h35" />
+        <g fill="currentColor" stroke="none"><circle cx="11" cy="13.5" r="1.2" /><circle cx="15.5" cy="13.5" r="1.2" /></g>
+        <path d="m12.5 24 5.5 4-5.5 4" />
+        <path className="field-symbol__accent" d="M23 32h8" />
+      </>}
+      {id === "architecture" && <>
+        <path className="field-symbol__detail" d="m4.5 34 17.5 9 21-11M14 25l-.1 10m14-9v11" />
+        <path d="M9 22v12.5L21.8 41V28m16-8v13l-16 8" />
+        <path className="field-symbol__face" d="M4 17.5 26 6l17.5 9v4L21.8 30 4 21Z" />
+        <path className="field-symbol__detail" d="m4.5 18 17.3 8.5L43 15.2m-21.2 11.3v3" />
+        <path className="field-symbol__accent" d="M32.5 25v10" />
+      </>}
+      {id === "learning" && <>
+        <path className="field-symbol__detail" d="M6 36h36M11 41V7m-2 12h4m16 15v4" />
+        <path className="field-symbol__detail" d="M22 16v19" strokeDasharray="1.5 3" />
+        <path d="M6 32c7 0 9-16 16-16s8 11 13 11c3 0 5-4 8-13" />
+        <circle className="field-symbol__accent" cx="22" cy="16" r="2.5" fill="currentColor" stroke="none" />
+      </>}
+      {id === "radio" && <>
+        <path className="field-symbol__detail" d="M10 7a21 21 0 0 0 0 26M38 7a21 21 0 0 1 0 26" />
+        <path d="M15.3 11.8a13 13 0 0 0 0 16.4m17.4-16.4a13 13 0 0 1 0 16.4" />
+        <path className="field-symbol__face" d="m24 20 7 20H17Z" />
+        <path className="field-symbol__detail" d="m20.2 32 6.1-4m-5.4.6 7.2 7.2M14 41h20" />
+        <circle className="field-symbol__accent" cx="24" cy="18.5" r="2.8" fill="currentColor" stroke="none" />
+      </>}
+    </svg>
+  );
 }
 
 export function ExpertiseDeck() {
