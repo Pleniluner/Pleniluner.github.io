@@ -44,6 +44,22 @@ export function IntroLoader() {
     }
 
     const previousOverflow = document.body.style.overflow;
+    const overlay = overlayRef.current;
+    if (!overlay) return;
+    const access = overlay.querySelector<HTMLElement>(".intro-loader__access");
+    const auth = overlay.querySelector<HTMLElement>(".intro-loader__auth-text");
+    const paths = overlay.querySelectorAll<SVGPathElement>(".intro-loader__scan-path");
+    const satellites = overlay.querySelectorAll<SVGCircleElement>(".intro-loader__satellite");
+    const orbitDots = overlay.querySelectorAll<SVGCircleElement>(".intro-loader__orbit-dot");
+    const core = overlay.querySelector<SVGCircleElement>(".intro-loader__core");
+    const rings = paths[0]?.parentElement;
+    const set = (name: string, value: number) => {
+      const next = String(value);
+      if (overlay.style.getPropertyValue(name) !== next) overlay.style.setProperty(name, next);
+    };
+    const write = (node: HTMLElement | null, value: string) => {
+      if (node && node.textContent !== value) node.textContent = value;
+    };
     let finished = false;
     let leaving = false;
     let frame = 0;
@@ -66,74 +82,61 @@ export function IntroLoader() {
     };
     const tick = (now: number) => {
       if (finished) return;
-      const overlay = overlayRef.current;
-      if (overlay) {
-        const motion = bootMotion(Math.min(TIMELINE_END, TIMELINE_START + (now - startedAt) / 1000));
-        const set = (name: string, value: number) => overlay.style.setProperty(name, String(value));
-        overlay.dataset.phase = motion.step;
-        set("--access-alpha", motion.accessOpacity);
-        set("--logo-alpha", Number(motion.logoOpacity));
-        set("--logo-shift", motion.logo.offsetX);
-        set("--logo-symbol-alpha", motion.logo.symbolScale);
-        set("--logo-text-alpha", motion.logoLetters.length / 9);
-        set("--auth-alpha", motion.authOpacity);
-        set("--brand-alpha", motion.brand[0].opacity);
-        set("--scan-alpha", motion.scanVisible ? motion.ringOpacity : 0);
-        set("--scan-message-alpha", motion.scanVisible ? motion.permissionOpacity : 0);
-        set("--welcome-alpha", motion.welcomeVisible ? motion.welcomeOpacity : 0);
-        set("--welcome-scale", motion.welcomeScale);
-        set("--welcome-highlight", motion.highlight);
-        set("--welcome-detail-alpha", Number(motion.companyVisible));
-        set("--welcome-flash", motion.welcomePanel);
+      const motion = bootMotion(Math.min(TIMELINE_END, TIMELINE_START + (now - startedAt) / 1000));
+      if (overlay.dataset.phase !== motion.step) overlay.dataset.phase = motion.step;
+      set("--access-alpha", motion.accessOpacity);
+      set("--logo-alpha", Number(motion.logoOpacity));
+      set("--logo-shift", motion.logo.offsetX);
+      set("--logo-symbol-alpha", motion.logo.symbolScale);
+      set("--logo-text-alpha", motion.logoLetters.length / 9);
+      set("--auth-alpha", motion.authOpacity);
+      set("--brand-alpha", motion.brand[0].opacity);
+      set("--scan-alpha", motion.scanVisible ? motion.ringOpacity : 0);
+      set("--scan-message-alpha", motion.scanVisible ? motion.permissionOpacity : 0);
+      set("--welcome-alpha", motion.welcomeVisible ? motion.welcomeOpacity : 0);
+      set("--welcome-scale", motion.welcomeScale);
+      set("--welcome-highlight", motion.highlight);
+      set("--welcome-detail-alpha", Number(motion.companyVisible));
+      set("--welcome-flash", motion.welcomePanel);
 
-        const access = overlay.querySelector<HTMLElement>(".intro-loader__access");
-        if (access) access.textContent = "A SIGNAL FROM THE STARS".slice(0, motion.access.length);
-        const auth = overlay.querySelector<HTMLElement>(".intro-loader__auth-text");
-        if (auth) {
-          const line = motion.f < 363 ? "SIGNAL FOUND : PLENILUNER" : motion.f < 421 ? "STATION READY" : "OPENING STATION...";
-          auth.textContent = line.slice(0, motion.auth.length);
+      write(access, "A SIGNAL FROM THE STARS".slice(0, motion.access.length));
+      const line = motion.f < 363 ? "SIGNAL FOUND : PLENILUNER" : motion.f < 421 ? "STATION READY" : "OPENING STATION...";
+      write(auth, line.slice(0, motion.auth.length));
+      set("--logo-draw", Math.min(1, motion.logo.length / 0.96));
+
+      const scan = motion.scan;
+      if (motion.scanVisible && paths.length === 6) {
+        if (rings) {
+          rings.setAttribute("transform", `translate(960 540) scale(${motion.ringScale}) translate(-960 -540)`);
+          rings.style.filter = `blur(${motion.ringBlur}px)`;
         }
-        overlay.querySelectorAll<SVGPathElement>(".intro-loader__mark-path").forEach(contour => {
-          const drawn = Math.min(1, motion.logo.length / 0.96);
-          contour.style.strokeDasharray = `${drawn} 1`;
-          contour.style.strokeDashoffset = "0";
+        paths[0].setAttribute("d", arc(scan.radius, scan.outerStart, scan.outerSweep));
+        paths[1].setAttribute("d", arc(scan.whiteRadius, scan.whiteStart, scan.whiteSweep));
+        paths[2].setAttribute("d", arc(scan.innerRadius, scan.innerStart, scan.innerSweep));
+        paths[3].setAttribute("d", arc(scan.innerRadius, scan.innerStart + Math.PI, scan.innerSweep));
+        motion.scanOrbit.sides.forEach((side, i) => {
+          paths[i + 4].setAttribute("d", arc(side.radius, side.start, side.sweep, side.x, side.y));
+          paths[i + 4].style.opacity = motion.scanOrbit.sideVisible ? "1" : "0";
         });
-        const scan = motion.scan;
-        const paths = overlay.querySelectorAll<SVGPathElement>(".intro-loader__scan-path");
-        if (motion.scanVisible && paths.length === 6) {
-          const rings = paths[0].parentElement;
-          if (rings) {
-            rings.setAttribute("transform", `translate(960 540) scale(${motion.ringScale}) translate(-960 -540)`);
-            rings.style.filter = `blur(${motion.ringBlur}px)`;
-          }
-          paths[0].setAttribute("d", arc(scan.radius, scan.outerStart, scan.outerSweep));
-          paths[1].setAttribute("d", arc(scan.whiteRadius, scan.whiteStart, scan.whiteSweep));
-          paths[2].setAttribute("d", arc(scan.innerRadius, scan.innerStart, scan.innerSweep));
-          paths[3].setAttribute("d", arc(scan.innerRadius, scan.innerStart + Math.PI, scan.innerSweep));
-          motion.scanOrbit.sides.forEach((side, i) => {
-            paths[i + 4].setAttribute("d", arc(side.radius, side.start, side.sweep, side.x, side.y));
-            paths[i + 4].style.opacity = motion.scanOrbit.sideVisible ? "1" : "0";
-          });
-          overlay.querySelectorAll<SVGCircleElement>(".intro-loader__satellite").forEach((dot, i) => {
-            const point = motion.scanOrbit.satellites[i];
-            dot.setAttribute("cx", String(point.x));
-            dot.setAttribute("cy", String(point.y));
-            dot.setAttribute("r", String(point.radius));
-          });
-          overlay.querySelectorAll<SVGCircleElement>(".intro-loader__orbit-dot").forEach((dot, i) => {
-            const angle = scan.orbit + i * Math.PI;
-            dot.setAttribute("cx", String(960 + Math.cos(angle) * scan.orbitRadius));
-            dot.setAttribute("cy", String(540 + Math.sin(angle) * scan.orbitRadius));
-            dot.setAttribute("r", String(scan.dotRadius));
-          });
-          const core = overlay.querySelector<SVGCircleElement>(".intro-loader__core");
-          if (core) core.setAttribute("r", String(motion.ornament ? motion.coreRadius : 0));
-        }
-        if (!leaving && motion.t >= TIMELINE_END + 5) {
-          leaving = true;
-          overlay.classList.add("is-leaving");
-          exitTimer = window.setTimeout(finish, EXIT_DURATION);
-        }
+        satellites.forEach((dot, i) => {
+          const point = motion.scanOrbit.satellites[i];
+          dot.setAttribute("cx", String(point.x));
+          dot.setAttribute("cy", String(point.y));
+          dot.setAttribute("r", String(point.radius));
+        });
+        orbitDots.forEach((dot, i) => {
+          const angle = scan.orbit + i * Math.PI;
+          dot.setAttribute("cx", String(960 + Math.cos(angle) * scan.orbitRadius));
+          dot.setAttribute("cy", String(540 + Math.sin(angle) * scan.orbitRadius));
+          dot.setAttribute("r", String(scan.dotRadius));
+        });
+        if (core) core.setAttribute("r", String(motion.ornament ? motion.coreRadius : 0));
+      }
+      if (!leaving && motion.t >= TIMELINE_END + 5) {
+        leaving = true;
+        root.dataset.stationIntro = "revealing";
+        overlay.classList.add("is-leaving");
+        exitTimer = window.setTimeout(finish, EXIT_DURATION);
       }
       if (!leaving) frame = window.requestAnimationFrame(tick);
     };

@@ -7,10 +7,10 @@ import { getMessages, stationMetadata } from "@/components/station/i18n/server";
 import "@/styles/station.css";
 import "@/styles/languages.css";
 import "@/styles/intro.css";
-import "@/styles/reveal.css";
 import "@/styles/station-layout.css";
 import "@/styles/station-scenes.css";
 import "@/styles/station-endfield.css";
+import "@/styles/station-motion.css";
 export const dynamicParams = false;
 export function generateStaticParams() { return locales.filter(item => item.slug).map(item => ({locale: item.slug})); }
 export async function generateMetadata({params}: {params: Promise<{locale: string}>}) {

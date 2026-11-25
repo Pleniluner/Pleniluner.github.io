@@ -58,12 +58,6 @@
   font-weight: 450;
 }
 
-.motion-ready .station-home [data-reveal] { transition-duration: 320ms; }
-.motion-ready .station-home [data-reveal="line"]::before {
-  transition-duration: 320ms;
-  transition-delay: 0ms;
-}
-
 /* A cut corner marks a control; reading surfaces keep straight edges. */
 .station-home .header-controls__bar { gap: 8px; }
 .station-home .header-control {
@@ -98,7 +92,6 @@
   background: #141c1d;
   box-shadow: none;
   backdrop-filter: none;
-  animation: station-menu-open 200ms var(--ef-snap);
 }
 .station-home .header-directory__links { gap: 4px 12px; }
 .station-home .compact-header nav.header-directory a,
@@ -128,11 +121,6 @@
   outline: 2px solid currentColor;
   outline-offset: -3px;
 }
-@keyframes station-menu-open {
-  from { opacity: 0; transform: translateY(-6px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
 /* The five destinations share one compact baseline instead of tall posters. */
 .station-home .fields-panel.section { padding-top: 260px; }
 .station-home .field-tabs { gap: 8px; margin-bottom: 40px; }
@@ -148,7 +136,7 @@
 }
 .station-home .field-tabs button::before {
   background: var(--ef-signal);
-  transform: translateX(-101%);
+  transform: translateX(var(--motion-wipe-start, -101%));
   transition: transform 240ms var(--ef-snap);
 }
 .station-home .field-card-symbol { width: 48px; height: 48px; margin-block: 0 20px; }
@@ -169,19 +157,6 @@
 .station-home .field-tabs button[aria-selected="true"] .field-card-title { color: var(--ef-ink); }
 .station-home .field-tabs button[aria-selected="true"] .field-card-index { background: var(--ef-signal); color: #101617; }
 .station-home .field-tabs button:focus-visible { outline: 2px solid var(--ef-ink); outline-offset: -5px; }
-.motion-ready .station-home .field-tabs.is-visible button {
-  animation: station-field-enter 320ms var(--ef-snap) both;
-}
-.motion-ready .station-home .field-tabs.is-visible button:nth-of-type(2) { animation-delay: 30ms; }
-.motion-ready .station-home .field-tabs.is-visible button:nth-of-type(3) { animation-delay: 60ms; }
-.motion-ready .station-home .field-tabs.is-visible button:nth-of-type(4) { animation-delay: 90ms; }
-.motion-ready .station-home .field-tabs.is-visible button:nth-of-type(5) { animation-delay: 120ms; }
-.station-home .field-panel { animation: station-field-enter 240ms var(--ef-snap); }
-@keyframes station-field-enter {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
 @media (hover: hover) {
   .station-home .header-control:hover,
   .station-home .header-popover a:hover { background: var(--ef-signal); color: #101617; }
@@ -207,10 +182,6 @@
   .station-home .interests .profile-row > h3 { font-size: 21px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .station-home .compact-header .header-popover,
-  .station-home .compact-header nav.header-directory,
-  .station-home .field-panel,
-  .motion-ready .station-home .field-tabs.is-visible button { animation: none; }
   .station-home .header-control,
   .station-home .header-control__chevron,
   .station-home .header-popover a,

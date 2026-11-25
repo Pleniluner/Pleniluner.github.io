@@ -8,7 +8,6 @@ import { SectionArtwork } from "./SectionArtwork";
 import { ExpertiseDeck } from "./ExpertiseDeck";
 import { SiteHeader } from "./SiteHeader";
 import { Motion } from "./Motion";
-import { SceneTransitions } from "./SceneTransitions";
 import { Starfield } from "./Starfield";
 import { MusicPlayer } from "./MusicPlayer";
 import { ProfileBlocks, ProfileContent, profile } from "./ProfileContent";
@@ -93,7 +92,6 @@ const socialLinks = [
     <div className="site-shell station-home">
       <IntroLoader />
       <Motion />
-      <SceneTransitions />
       <a className="skip-link" href="#main">{t("s054")}</a>
 
       <SiteHeader />

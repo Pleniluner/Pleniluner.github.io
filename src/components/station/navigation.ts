@@ -36,6 +36,7 @@ export function useReadingPosition() {
     const shell = header?.closest<HTMLElement>(".station-home");
     const sections = Array.from(shell?.querySelectorAll<HTMLElement>("main > section") ?? []);
     if (!header || !shell || !sections.length) return;
+    const progress = shell.querySelector<HTMLElement>("[data-scroll-progress]");
 
     let frame = 0;
     let pageWidth = 0;
@@ -53,6 +54,10 @@ export function useReadingPosition() {
         needsRestore = false;
         restoreReadingPosition();
       }
+
+      const scrollRange = document.documentElement.scrollHeight - window.innerHeight;
+      const fraction = scrollRange > 0 ? Math.max(0, Math.min(1, window.scrollY / scrollRange)) : 0;
+      progress?.style.setProperty("--scroll-progress", String(fraction));
 
       const headerBottom = header.getBoundingClientRect().bottom;
       const readingLine = headerBottom + (window.innerHeight - headerBottom) / 4;

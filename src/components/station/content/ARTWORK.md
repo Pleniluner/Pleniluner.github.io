@@ -22,8 +22,8 @@ downloading the original fallbacks. The original-resolution workbench variant
 retains the original alpha channel byte for byte. Menu, keyboard, quote-language,
 RTL and reduced-motion flows were checked against the static export.
 
-The full-frame illustrations also override the more specific `.scene-motion`
-image transform. At the start, centre and end of each image, both desktop and
+The full-frame illustrations use `.section-artwork--complete` to exclude them
+from the background entrance effect. At the start, centre and end of each image, both desktop and
 mobile checks confirm that the image fits its frame without scroll zoom.
 These two sections also use the body's available width, measured by the existing
 navigation resize observer, so desktop scrollbar gutters do not push the frame

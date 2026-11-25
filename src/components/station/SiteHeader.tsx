@@ -67,7 +67,7 @@ export function SiteHeader() {
           </svg>
         </button>
       </div>
-      <div id="header-language" className="header-popover header-language" hidden={panel !== "language"}>
+      <div id="header-language" className="header-popover header-language" hidden={panel !== "language"} inert={panel !== "language"}>
         <div className="language-grid" role="group" aria-label={t("s130")}>{locales.map(item =>
           <a key={item.id} href={`${localeHref(item.id)}#${anchor}`} hrefLang={item.id} lang={item.id} dir={item.dir}
             aria-current={locale === item.id ? "page" : undefined}
@@ -76,7 +76,7 @@ export function SiteHeader() {
           </a>
         )}</div>
       </div>
-      <nav id="header-directory" className="header-popover header-directory" aria-label={t("s131")} hidden={panel !== "directory"}>
+      <nav id="header-directory" className="header-popover header-directory" aria-label={t("s131")} hidden={panel !== "directory"} inert={panel !== "directory"}>
         <div className="header-directory__links">{links.map(([id,key]) =>
           <a key={id} href={"#" + id} aria-current={id === directory ? "location" : undefined}
             onClick={() => { setPanel(null); directoryButton.current?.focus({ preventScroll: true }); }}>{t(key)}</a>

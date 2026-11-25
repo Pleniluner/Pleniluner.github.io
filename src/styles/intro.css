@@ -36,7 +36,7 @@
 .intro-loader__identity { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; gap:clamp(28px,5vw,90px); width:min(680px,calc(100% - 48px)); margin:auto; }
 .intro-loader__mark { width:clamp(120px,14vw,200px); flex:0 0 auto; opacity:var(--logo-alpha); transform:translateX(min(20vw,calc(var(--logo-shift) * .6px))); }
 .intro-loader__mark svg { display:block; width:100%; overflow:visible; }
-.intro-loader__mark-path { stroke-dasharray:0 1; }
+.intro-loader__mark-path { stroke-dasharray:var(--logo-draw, 0) 1; }
 .intro-loader__mark-accent { opacity:var(--logo-symbol-alpha); }
 .intro-loader__mark span { display:block; margin-top:3px; opacity:var(--logo-text-alpha); text-align:center; font:500 clamp(9px,.75vw,12px)/1.4 var(--font-reading); letter-spacing:.22em; }
 .intro-loader__auth { display:flex; align-items:center; gap:12px; min-width:225px; opacity:var(--auth-alpha); color:#d6ddd7; font:400 clamp(11px,1vw,15px)/1.5 var(--font-reading); letter-spacing:.04em; }

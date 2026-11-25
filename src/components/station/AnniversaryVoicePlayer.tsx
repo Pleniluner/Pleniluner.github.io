@@ -44,6 +44,7 @@ export function AnniversaryVoicePlayer() {
   const [quoteIndex, setQuoteIndex] = useState<number | null>(null);
   const activeVoice = VOICES[activeVoiceIndex];
   const quote = quoteIndex === null ? { s074: t("s074"), s075: t("s075") } : [zh, en, ja, ko][quoteIndex];
+  const quoteLanguage = quoteIndex === null ? undefined : ["zh-CN", "en", "ja", "ko"][quoteIndex];
 
   const selectVoice = (index: number) => {
     setQuoteIndex(index);
@@ -68,7 +69,8 @@ export function AnniversaryVoicePlayer() {
 
     try {
       await audio.play();
-    } catch {
+    } catch (cause) {
+      if (audio !== audioRef.current || (cause instanceof DOMException && cause.name === "AbortError")) return;
       setIsPlaying(false);
       setError(t("s113"));
     }
@@ -76,6 +78,23 @@ export function AnniversaryVoicePlayer() {
 
   return (
     <div className={`voice-quotation${isPlaying ? " is-playing" : ""}`} aria-label={t("s114")}>
+      <div className="quote-voice-controls">
+        <span className="quote-voice-status" aria-hidden="true"><i /><i /><i /><i /><span>{activeVoice.duration}</span></span>
+        <div className="voice-languages" role="group" aria-label={t("s117")}>
+          {VOICES.map((voice, index) => (
+            <button
+              className={index === activeVoiceIndex ? "is-active" : ""}
+              type="button"
+              key={voice.id}
+              onClick={() => selectVoice(index)}
+              aria-pressed={index === activeVoiceIndex}
+            >
+              <span>{t(voice.label)}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
       <button
         className="design-credo-statement quote-play"
         type="button"
@@ -83,26 +102,10 @@ export function AnniversaryVoicePlayer() {
         aria-label={`${quote.s074} ${quote.s075} — ${isPlaying ? t("s105") : t("s106")} · ${t(activeVoice.label)}`}
         aria-pressed={isPlaying}
       >
-        <span lang={quoteIndex === null ? undefined : ["zh-CN", "en", "ja", "ko"][quoteIndex]} dir={quoteIndex === null ? undefined : "ltr"}>{quote.s074}</span>
-        <span lang={quoteIndex === null ? undefined : ["zh-CN", "en", "ja", "ko"][quoteIndex]} dir={quoteIndex === null ? undefined : "ltr"}>{quote.s075}</span>
-      </button>
-
-      <div className="quote-voice-controls">
-      <span className="quote-voice-status" aria-hidden="true"><i /><i /><i /><i /><span>{activeVoice.duration}</span></span>
-      <div className="voice-languages" role="group" aria-label={t("s117")}>
-        {VOICES.map((voice, index) => (
-          <button
-            className={index === activeVoiceIndex ? "is-active" : ""}
-            type="button"
-            key={voice.id}
-            onClick={() => selectVoice(index)}
-            aria-pressed={index === activeVoiceIndex}
-          >
-            <span>{t(voice.label)}</span>
-          </button>
+        {[quote.s074, quote.s075].map((line, index) => (
+          <span key={`${quoteLanguage ?? "page"}-${index}`} lang={quoteLanguage} dir={quoteLanguage ? "ltr" : undefined}>{line}</span>
         ))}
-      </div>
-      </div>
+      </button>
 
       {error ? <span className="voice-line-error" role="status">{error}</span> : null}
 

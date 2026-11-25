@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent } from "react";
+import { useEffect, useLayoutEffect, useReducer, useRef, type KeyboardEvent } from "react";
 import { useLanguage } from "./i18n/LanguageProvider";
 import { ProfileContent, profile } from "./ProfileContent";
 import { SectionArtwork } from "./SectionArtwork";
@@ -14,6 +14,13 @@ const subjects = [
   { id: "radio", section: "radio", layout: "plain" },
 ] as const;
 type SubjectId = typeof subjects[number]["id"];
+type Selection = { id: SubjectId; backward: boolean };
+
+function changeSubject(previous: Selection, id: SubjectId): Selection {
+  if (previous.id === id) return previous;
+  const index = (key: SubjectId) => subjects.findIndex(subject => subject.id === key);
+  return { id, backward: index(id) < index(previous.id) };
+}
 
 function FieldSymbol({ id }: { id: SubjectId }) {
   return <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinejoin="miter" aria-hidden="true">
@@ -27,7 +34,7 @@ function FieldSymbol({ id }: { id: SubjectId }) {
 
 export function ExpertiseDeck() {
   const { t, locale } = useLanguage();
-  const [active, setActive] = useState<SubjectId>("computing");
+  const [{ id: active, backward }, setActive] = useReducer(changeSubject, { id: "computing", backward: false });
   const frame = useRef<HTMLElement>(null);
   const tabs = useRef<(HTMLButtonElement | null)[]>([]);
   const readingPosition = useRef<number | null>(null);
@@ -85,7 +92,7 @@ export function ExpertiseDeck() {
   };
 
   return <section ref={frame} id="fields" className="section fields-panel illustrated-section"
-    data-nav="computing" data-reading-anchor={active} aria-labelledby={`${active}-heading`}>
+    data-nav="computing" data-reading-anchor={active} data-backward={backward || undefined} aria-labelledby={`${active}-heading`}>
     <SectionArtwork src="images/fields.jpg" />
     <div className="panel-frame fields-frame">
       <div className="field-tabs" role="tablist" aria-label={t("s131")} data-reveal="deck">
