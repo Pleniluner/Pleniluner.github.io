@@ -4,6 +4,7 @@ import { useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent } from
 import { useLanguage } from "./i18n/LanguageProvider";
 import { ProfileContent, profile } from "./ProfileContent";
 import { SectionArtwork } from "./SectionArtwork";
+import { isHistoryTraversal } from "./navigation";
 
 const subjects = [
   { id: "computing", section: "computing", layout: "folds" },
@@ -40,14 +41,14 @@ export function ExpertiseDeck() {
   }, [active]);
 
   useEffect(() => {
-    const followAnchor = () => {
+    const followAnchor = (scroll: boolean) => {
       const changed = window.location.hash !== previousHash.current;
       previousHash.current = window.location.hash;
       const subject = subjects.find(item => `#${item.id}` === window.location.hash);
       if (!subject) return;
       selectedByHash.current = true;
       setActive(subject.id);
-      if (changed) {
+      if (changed && scroll) {
         requestAnimationFrame(() => {
           frame.current?.scrollIntoView({ block: "start" });
           selectedByHash.current = false;
@@ -56,10 +57,11 @@ export function ExpertiseDeck() {
         selectedByHash.current = false;
       }
     };
-    followAnchor();
-    window.addEventListener("hashchange", followAnchor);
+    followAnchor(!isHistoryTraversal());
+    const onHashChange = () => followAnchor(true);
+    window.addEventListener("hashchange", onHashChange);
     return () => {
-      window.removeEventListener("hashchange", followAnchor);
+      window.removeEventListener("hashchange", onHashChange);
     };
   }, []);
 
@@ -82,7 +84,8 @@ export function ExpertiseDeck() {
     tabs.current[next]?.focus();
   };
 
-  return <section ref={frame} id="fields" className="section fields-panel illustrated-section" data-nav={active} aria-labelledby={`${active}-heading`}>
+  return <section ref={frame} id="fields" className="section fields-panel illustrated-section"
+    data-nav="computing" data-reading-anchor={active} aria-labelledby={`${active}-heading`}>
     <SectionArtwork src="images/fields.jpg" />
     <div className="panel-frame fields-frame">
       <div className="field-tabs" role="tablist" aria-label={t("s131")} data-reveal="deck">

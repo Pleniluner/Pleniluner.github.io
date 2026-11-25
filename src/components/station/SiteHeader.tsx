@@ -1,15 +1,27 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type MouseEvent } from "react";
 import { useLanguage } from "./i18n/LanguageProvider";
-import { locales, localeInfo, localeHref } from "./i18n/locales";
+import { locales, localeInfo, localeHref, type Locale } from "./i18n/locales";
 import { StationMark } from "./StationMark";
+import { rememberReadingPosition, useReadingPosition } from "./navigation";
 const links = [["top","s055"],["about","s058"],["now","s077"],["computing","s143"],["interests","s083"],["gear","s085"],["contact","s095"]];
 export function SiteHeader() {
   const { locale, t } = useLanguage();
+  const { headerRef, anchor, directory } = useReadingPosition();
   const [panel, setPanel] = useState<"language" | "directory" | null>(null);
   const controls = useRef<HTMLDivElement>(null);
   const languageButton = useRef<HTMLButtonElement>(null);
   const directoryButton = useRef<HTMLButtonElement>(null);
+  function chooseLanguage(event: MouseEvent<HTMLAnchorElement>, next: Locale) {
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    setPanel(null);
+    if (next !== locale) {
+      rememberReadingPosition(anchor);
+      return;
+    }
+    event.preventDefault();
+    languageButton.current?.focus({ preventScroll: true });
+  }
   useEffect(() => {
     if (!panel) return;
     const outside = (event: PointerEvent) => {
@@ -24,7 +36,7 @@ export function SiteHeader() {
     document.addEventListener("keydown", escape);
     return () => { document.removeEventListener("pointerdown", outside); document.removeEventListener("keydown", escape); };
   }, [panel]);
-  return <header className="site-header compact-header">
+  return <header className="site-header compact-header" ref={headerRef}>
     <a className="wordmark" href="#top" aria-label="清月空间站 ~ Pleniluner’s Space Station">
       <StationMark className="station-logo" />
       <span className="station-identity">
@@ -57,16 +69,17 @@ export function SiteHeader() {
       </div>
       <div id="header-language" className="header-popover header-language" hidden={panel !== "language"}>
         <div className="language-grid" role="group" aria-label={t("s130")}>{locales.map(item =>
-          <a key={item.id} href={localeHref(item.id)} hrefLang={item.id} lang={item.id} dir={item.dir}
+          <a key={item.id} href={`${localeHref(item.id)}#${anchor}`} hrefLang={item.id} lang={item.id} dir={item.dir}
             aria-current={locale === item.id ? "page" : undefined}
-            onClick={event => { event.currentTarget.href = localeHref(item.id) + (window.location.hash || "#top"); }}>
+            onClick={event => chooseLanguage(event, item.id)}>
             <span>{item.label}</span><span aria-hidden="true">{locale === item.id ? "✓" : ""}</span>
           </a>
         )}</div>
       </div>
       <nav id="header-directory" className="header-popover header-directory" aria-label={t("s131")} hidden={panel !== "directory"}>
         <div className="header-directory__links">{links.map(([id,key]) =>
-          <a key={id} href={"#" + id} onClick={() => {setPanel(null); directoryButton.current?.focus();}}>{t(key)}</a>
+          <a key={id} href={"#" + id} aria-current={id === directory ? "location" : undefined}
+            onClick={() => { setPanel(null); directoryButton.current?.focus({ preventScroll: true }); }}>{t(key)}</a>
         )}</div>
       </nav>
     </div>

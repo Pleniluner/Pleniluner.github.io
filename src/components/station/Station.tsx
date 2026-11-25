@@ -2,7 +2,6 @@
 import { useLanguage } from "./i18n/LanguageProvider";
 import { StationImage } from "./StationImage";
 import { AnniversaryVoicePlayer } from "./AnniversaryVoicePlayer";
-import { ScrollNavigation } from "./ScrollNavigation";
 import { IntroLoader } from "./IntroLoader";
 import { ArtworkViewer } from "./ArtworkViewer";
 import { SectionArtwork } from "./SectionArtwork";
@@ -95,7 +94,6 @@ const socialLinks = [
       <IntroLoader />
       <Motion />
       <SceneTransitions />
-      <ScrollNavigation />
       <a className="skip-link" href="#main">{t("s054")}</a>
 
       <SiteHeader />

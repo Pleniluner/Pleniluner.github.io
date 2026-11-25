@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useLanguage } from "./i18n/LanguageProvider";
 import { bootMotion } from "./rhine-timing/boot-motion";
 import { StationMark } from "./StationMark";
+import { isHistoryTraversal } from "./navigation";
 
 // Timing data is adapted from RhineLabUI; attribution is in rhine-timing/LICENSE.
 const TIMELINE_START = 1.76;
@@ -22,17 +23,19 @@ export function IntroLoader() {
   const { t } = useLanguage();
   const [visible, setVisible] = useState(true);
   const overlayRef = useRef<HTMLDivElement>(null);
+  const dismiss = useRef<(() => void) | null>(null);
 
   useEffect(() => {
     const root = document.documentElement;
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
     const replay = new URLSearchParams(window.location.search).get("intro") === "1";
     const skipsForAnchor = !replay && Boolean(window.location.hash);
-    if (reduced.matches || skipsForAnchor) {
+    const restoringScroll = isHistoryTraversal();
+    if (reduced.matches || skipsForAnchor || restoringScroll) {
       root.dataset.stationIntro = "done";
       let active = true;
       queueMicrotask(() => { if (active) setVisible(false); });
-      if (skipsForAnchor) window.requestAnimationFrame(() => {
+      if (skipsForAnchor && !restoringScroll) window.requestAnimationFrame(() => {
         let id = window.location.hash.slice(1);
         try { id = decodeURIComponent(id); } catch { /* Leave malformed anchors inert. */ }
         document.getElementById(id)?.scrollIntoView({ block: "start", behavior: "instant" });
@@ -57,6 +60,7 @@ export function IntroLoader() {
       setVisible(false);
     };
     const safetyTimer = window.setTimeout(finish, (TIMELINE_END - TIMELINE_START) * 1000 + EXIT_DURATION + 2000);
+    dismiss.current = finish;
     const onKey = (event: KeyboardEvent) => {
       if (["Escape", "Tab", "Enter", " ", "ArrowDown", "ArrowUp", "PageDown", "PageUp"].includes(event.key)) finish();
     };
@@ -142,6 +146,7 @@ export function IntroLoader() {
     reduced.addEventListener("change", finish);
     return () => {
       finished = true;
+      dismiss.current = null;
       window.cancelAnimationFrame(frame);
       window.clearTimeout(exitTimer);
       window.clearTimeout(safetyTimer);
@@ -155,6 +160,12 @@ export function IntroLoader() {
 
   if (!visible) return null;
   return <><noscript><style>{".intro-loader{display:none!important}"}</style></noscript><div ref={overlayRef} className="intro-loader" aria-label={t("s135")}>
+    <button type="button" className="intro-loader__skip" onClick={() => dismiss.current?.()}>
+      {t("s125")}
+      <svg aria-hidden="true" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+        <path d="m4 3.5 4.5 4.5L4 12.5M12 3.5v9" />
+      </svg>
+    </button>
     <div className="intro-loader__corners" aria-hidden="true"><span>PLENILUNER</span><span>SPACE STATION</span><i /></div>
     <div className="intro-loader__access" aria-hidden="true" dir="ltr" />
     <div className="intro-loader__identity" aria-hidden="true" dir="ltr">

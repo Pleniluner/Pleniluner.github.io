@@ -113,6 +113,12 @@
   transition: background-color 180ms, color 180ms;
 }
 .station-home .header-language .language-grid { gap: 4px 8px; }
+.station-home .compact-header nav.header-directory a[aria-current="location"] {
+  padding-inline-start: 10px;
+  border-inline-start: 2px solid var(--ef-signal);
+  background: #d8eb5114;
+  color: var(--ef-signal);
+}
 .station-home .header-language .language-grid a[aria-current="page"] {
   background: var(--ef-signal);
   color: #101617;
