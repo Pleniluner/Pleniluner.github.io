@@ -66,8 +66,8 @@ const socialLinks = [
             <Starfield />
             <div className="hero-title-lockup">
               <div className="hero-quote">
-                <h1 id="hero-title"><span>Pax omnibus.</span></h1>
-                <p data-type-zh>{t("s056")}</p>
+                <h1 id="hero-title" data-search-target><span>Pax omnibus.</span></h1>
+                <p id="text-s056" data-search-target data-type-zh>{t("s056")}</p>
               </div>
             </div>
           </div>
@@ -88,19 +88,19 @@ const socialLinks = [
             <div className="about-profile">
             <header className="section-header" data-reveal>
               <div>
-                <h2 id="about-title">{t("s058")}</h2>
+                <h2 id="about-title" data-search-target>{t("s058")}</h2>
               </div>
               <p>{t(profile.tagline)}</p>
             </header>
 
             <div className="hero-intro">
               <ProfileBlocks blocks={[profile.sections.intro.blocks[0]]} />
-              <p>{t("s061")}</p>
+              <p id="text-s061" data-search-target>{t("s061")}</p>
               <details className="about-name-details" data-reading-fold="name">
-                <summary>{t("s062")}</summary>
-              <p id="note-name">
+                <summary id="text-s062" data-search-target>{t("s062")}</summary>
+              <p id="note-name" data-search-target>
                 {t("s063")}<a href="https://www.thwiki.cc/%E7%9B%88%E6%9C%88%E7%B4%80%E5%B9%B4%EF%BD%9EPlenilune_Annals" target="_blank" rel="noreferrer">{t("s064")}</a>{t("s065")}</p>
-              <p>
+              <p id="text-s066" data-search-target>
                 {t("s066")}<a href="https://music.apple.com/us/album/elysias-heart-feat-enzalla-single/1082112757" target="_blank" rel="noreferrer">Elysia&apos;s Heart</a>{t("s067")}</p>
                 <p>
                   <a href="#elysias-heart-player" onClick={event => {
@@ -151,7 +151,7 @@ const socialLinks = [
             <header className="section-header" data-reveal>
               <div>
                 <span className="section-kicker">{t("s077")}</span>
-                <h2 id="now-title">{t(profile.sections.workbench.title)}</h2>
+                <h2 id="now-title" data-search-target>{t(profile.sections.workbench.title)}</h2>
               </div>
 
             </header>
@@ -175,7 +175,7 @@ const socialLinks = [
             <header className="section-header" data-reveal>
               <div>
                 <span className="section-kicker">{t("s083")}</span>
-                <h2 id="interests-title">{t(profile.sections.interests.title)}</h2>
+                <h2 id="interests-title" data-search-target>{t(profile.sections.interests.title)}</h2>
               </div>
             </header>
 
@@ -196,7 +196,7 @@ const socialLinks = [
           <div className="panel-frame gear" data-reveal>
             <div className="gear-heading">
               <span className="section-kicker">{t("s085")}</span>
-              <h2 id="gear-title">{t(profile.sections.devices.title)}</h2>
+              <h2 id="gear-title" data-search-target>{t(profile.sections.devices.title)}</h2>
               {locale.startsWith("zh") && <p className="workstation-name" lang="en" dir="ltr">Pleniluner’s Workstation</p>}
               <div className="workstation-intro"><ProfileBlocks blocks={[profile.sections.devices.blocks[0]]} /></div>
             </div>

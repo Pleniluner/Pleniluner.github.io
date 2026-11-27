@@ -10,6 +10,10 @@ type Block = { type: string; source?: string; href?: string; key?: string; items
 type Section = { title: string; blocks: Block[] };
 export const profile = structure as { sections: Record<string, Section>; closing: string; tagline: string };
 
+function searchTarget(key: string, paragraphIndex = 0) {
+  return { id: `text-${key}${paragraphIndex ? `-${paragraphIndex + 1}` : ""}`, "data-search-target": true };
+}
+
 function Inline({ text }: { text: string }) {
   return <>{text.split(/(\*\*[^*]+\*\*|\[[^\]]+\]\(https:\/\/[^)\s]+\))/g).map((part, index) => {
     if (part.startsWith("**") && part.endsWith("**")) return <strong dir="auto" key={index}>{part.slice(2, -2)}</strong>;
@@ -23,44 +27,44 @@ export function ProfileBlocks({ blocks, revealItems = false }: { blocks: Block[]
   const { t } = useLanguage();
   return <>{blocks.map((block, index) => {
     const id = block.key ?? block.items?.[0] ?? block.rows?.[0]?.[0] ?? String(index);
-    if (block.type === "heading") return <h3 key={id}><Inline text={t(block.key!)} /></h3>;
-    if (block.type === "subheading") return <h3 className="profile-subheading" key={id}><Inline text={t(block.key!)} /></h3>;
+    if (block.type === "heading") return <h3 key={id} {...searchTarget(id)}><Inline text={t(block.key!)} /></h3>;
+    if (block.type === "subheading") return <h3 className="profile-subheading" key={id} {...searchTarget(id)}><Inline text={t(block.key!)} /></h3>;
     if (block.type === "quotation") return <figure className="cited-passage" key={id}>
-      <blockquote dir="auto">{block.items!.map(line => <p key={line}>{t(line)}</p>)}</blockquote>
+      <blockquote dir="auto">{block.items!.map(line => <p key={line} {...searchTarget(line)}>{t(line)}</p>)}</blockquote>
       <figcaption><a href={block.href}>{t(block.source!)}</a></figcaption>
     </figure>;
     if (block.type === "paragraph") return <Fragment key={id}>{t(block.key!).split("\n\n").map((paragraph, paragraphIndex) => <Fragment key={paragraphIndex}>
       {paragraphIndex > 0 ? "\n\n" : null}
-      <p className="profile-copy" dir="auto"><Inline text={paragraph} /></p>
+      <p className="profile-copy" dir="auto" {...searchTarget(id, paragraphIndex)}><Inline text={paragraph} /></p>
     </Fragment>)}</Fragment>;
     if (block.type === "details" && block.key === "p153") return <details className="profile-fold game-fold" key={id} data-reading-fold={foldName(id)}>
-      <summary data-reveal="line"><span>{t(block.key)}</span><span className="profile-fold__mark" aria-hidden="true" /></summary>
+      <summary data-reveal="line" {...searchTarget(id)}><span>{t(block.key)}</span><span className="profile-fold__mark" aria-hidden="true" /></summary>
       <div id={`note-${foldName(id)}`} className="game-groups">{block.blocks!.filter(item => item.type === "subheading").map((item, i) => <div className="game-group" key={item.key}>
-        <h4><Inline text={t(item.key!)} /></h4>
-        <p dir="auto">{t(block.blocks![i * 2 + 1].key!).split(" · ").map((title, titleIndex) => <Fragment key={title}>
+        <h4 {...searchTarget(item.key!)}><Inline text={t(item.key!)} /></h4>
+        <p dir="auto" {...searchTarget(block.blocks![i * 2 + 1].key!)}>{t(block.blocks![i * 2 + 1].key!).split(" · ").map((title, titleIndex) => <Fragment key={title}>
           {titleIndex > 0 ? " · " : null}<span className="game-title">{title}</span>
         </Fragment>)}</p>
       </div>)}</div>
     </details>;
     if (block.type === "details") return <details className="profile-fold" key={id} data-reading-fold={foldName(id)}>
-      <summary data-reveal="line"><span><Inline text={t(block.key!)} /></span><span className="profile-fold__mark" aria-hidden="true" /></summary>
+      <summary data-reveal="line" {...searchTarget(id)}><span><Inline text={t(block.key!)} /></span><span className="profile-fold__mark" aria-hidden="true" /></summary>
       <div id={`note-${foldName(id)}`} className="profile-fold__body"><ProfileBlocks blocks={block.blocks!} /></div>
     </details>;
     if (block.type === "list" && block.items?.[0] === "p127") return <nav className="resource-list" aria-label={t("s093")} key={id}>
       {block.items.map((item, i) => {
         const link = t(item).match(/^\[([^\]]+)\]\((https:\/\/[^)\s]+)\)$/);
         if (!link) return null;
-        return <a key={item} href={link[2]} target="_blank" rel="noreferrer" data-reveal="line">
+        return <a key={item} href={link[2]} target="_blank" rel="noreferrer" data-reveal="line" {...searchTarget(item)}>
           <i className="resource-index" aria-hidden="true">{String(i + 1).padStart(2, "0")}</i>
           <strong>{link[1]}</strong><span>{t(`s${String(49 + i).padStart(3, "0")}`)}</span>
           <span className="resource-action" aria-hidden="true">{t("s094")}</span>
         </a>;
       })}
     </nav>;
-    if (block.type === "list") return <ul className="profile-list" key={id}>{block.items!.map(item => <li dir="auto" key={item} data-reveal={revealItems ? "line" : undefined}><Inline text={t(item)} /></li>)}</ul>;
+    if (block.type === "list") return <ul className="profile-list" key={id}>{block.items!.map(item => <li dir="auto" key={item} {...searchTarget(item)} data-reveal={revealItems ? "line" : undefined}><Inline text={t(item)} /></li>)}</ul>;
     if (block.type === "table") return <div className="profile-table-wrap" key={id}><table className="profile-table">
       <thead><tr>{block.rows![0].map(cell => <th scope="col" key={cell}><Inline text={t(cell)} /></th>)}</tr></thead>
-      <tbody>{block.rows!.slice(1).map(row => <tr key={row[0]}>{row.map(cell => <td key={cell}><Inline text={t(cell)} /></td>)}</tr>)}</tbody>
+      <tbody>{block.rows!.slice(1).map(row => <tr key={row[0]} {...searchTarget(row[0])}>{row.map(cell => <td key={cell}><Inline text={t(cell)} /></td>)}</tr>)}</tbody>
     </table></div>;
     return null;
   })}</>;
@@ -80,12 +84,12 @@ export function ProfileContent({ section, layout = "plain" }: { section: string;
     {preamble.length > 0 && <div className="profile-preamble"><ProfileBlocks blocks={preamble} /></div>}
     <div className={`profile-groups profile-groups--${layout}`}>{groups.map(group => layout === "folds" ?
       <details className="profile-fold" key={group.key} data-reading-fold={foldName(group.key)}>
-        <summary data-reveal="line"><span>{t(group.key)}</span><span className="profile-fold__mark" aria-hidden="true" /></summary>
+        <summary data-reveal="line" {...searchTarget(group.key)}><span>{t(group.key)}</span><span className="profile-fold__mark" aria-hidden="true" /></summary>
         <div id={`note-${foldName(group.key)}`} className="profile-fold__body"><ProfileBlocks blocks={group.blocks} /></div>
       </details> :
       <article className={group.key === "p021" ? "profile-plans" : "profile-row"} key={group.key} data-profile-group={group.key} data-reveal={group.key === "p021" ? undefined : "line"}>
         {section === "interests" && <InterestIllustration kind={group.key} />}
-        <h3>{t(group.key)}</h3><div><ProfileBlocks blocks={group.blocks} revealItems={group.key === "p021"} /></div>
+        <h3 {...searchTarget(group.key)}>{t(group.key)}</h3><div><ProfileBlocks blocks={group.blocks} revealItems={group.key === "p021"} /></div>
       </article>
     )}</div>
   </div>;

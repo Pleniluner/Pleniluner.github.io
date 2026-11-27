@@ -2,7 +2,17 @@
 
 import { useEffect, useRef, useState } from "react";
 
-const start = { anchor: "top", directory: "top", openFolds: "" };
+const start = { anchor: "top", directory: "top", subject: "", openFolds: "" };
+
+export const readingLinkEvent = "station:reading-link";
+
+export const fieldSubjects = [
+  { id: "computing", section: "computing", layout: "folds" },
+  { id: "tools", section: "tools", layout: "folds" },
+  { id: "architecture", section: "architecture", layout: "folds" },
+  { id: "learning", section: "mathematics", layout: "plain" },
+  { id: "radio", section: "radio", layout: "plain" },
+] as const;
 
 export function isHistoryTraversal() {
   const [entry] = performance.getEntriesByType("navigation") as PerformanceNavigationTiming[];
@@ -27,7 +37,7 @@ function restoreReadingPosition() {
   window.history.replaceState(state, "");
 }
 
-function foldKey(fold: HTMLDetailsElement) {
+export function foldKey(fold: HTMLDetailsElement) {
   return fold.dataset.readingFold ?? fold.id;
 }
 
@@ -68,6 +78,13 @@ export function useReadingPosition() {
       }
     }
     applyFoldLink(true); // Keep any notes the reader opened before hydration.
+    const initialHash = window.location.hash;
+    const initialTarget = document.getElementById(initialHash.slice(1));
+    // The initial fragment may point inside a disclosure or a tab hidden before hydration.
+    const initialScroll = !isHistoryTraversal() && initialTarget?.hasAttribute("data-search-target")
+      ? requestAnimationFrame(() => {
+        if (window.location.hash === initialHash) initialTarget.scrollIntoView({ block: "start", behavior: "instant" });
+      }) : 0;
 
     let frame = 0;
     let pageWidth = 0;
@@ -99,18 +116,17 @@ export function useReadingPosition() {
       header.classList.toggle("is-over-content", section.dataset.tone !== "dark");
 
       const directory = section.dataset.nav ?? section.id;
-      let anchor = section.dataset.readingAnchor ?? section.id;
+      const subject = section.dataset.readingAnchor ?? "";
+      let anchor = visibleFold(opened, section, headerBottom, readingLine) ?? (subject || section.id);
       // Keep a deep link such as the music player while it is still on screen.
       const hash = window.location.hash;
       const linked = hash && document.getElementById(hash.slice(1));
-      if (!section.dataset.readingAnchor && linked && linked !== section && section.contains(linked)) {
+      if (linked && linked !== section && section.contains(linked) && (!section.dataset.readingAnchor || linked.hasAttribute("data-search-target"))) {
         const rect = linked.getBoundingClientRect();
-        if (rect.bottom > headerBottom && rect.top < window.innerHeight) anchor = linked.id;
+        if (rect.height && rect.bottom > headerBottom && rect.top < window.innerHeight) anchor = linked.id;
       }
-      const fold = visibleFold(opened, section, headerBottom, readingLine);
-      if (fold) anchor = fold;
-      if (anchor !== previous.anchor || directory !== previous.directory || openFolds !== previous.openFolds) {
-        previous = { anchor, directory, openFolds };
+      if (anchor !== previous.anchor || directory !== previous.directory || subject !== previous.subject || openFolds !== previous.openFolds) {
+        previous = { anchor, directory, subject, openFolds };
         setPosition(previous);
       }
     };
@@ -136,7 +152,12 @@ export function useReadingPosition() {
       if (event.persisted) needsRestore = true;
       schedule();
     };
-    const onPopState = () => { applyFoldLink(false); schedule(); };
+    const onReadingLink = () => { applyFoldLink(true); schedule(); };
+    const onPopState = () => {
+      applyFoldLink(false);
+      needsRestore = Boolean(window.history.state?.stationReading);
+      schedule();
+    };
     const resize = new ResizeObserver(schedule);
     const selection = new MutationObserver(schedule);
     resize.observe(document.body);
@@ -150,17 +171,20 @@ export function useReadingPosition() {
     window.addEventListener("scroll", schedule, { passive: true });
     window.addEventListener("resize", schedule);
     window.addEventListener("hashchange", schedule);
+    window.addEventListener(readingLinkEvent, onReadingLink);
     window.addEventListener("pageshow", onPageShow);
     window.addEventListener("popstate", onPopState);
     return () => {
       resize.disconnect();
       selection.disconnect();
       cancelAnimationFrame(frame);
+      cancelAnimationFrame(initialScroll);
       shell.style.removeProperty("--station-page-width");
       shell.removeEventListener("toggle", onFoldToggle, true);
       window.removeEventListener("scroll", schedule);
       window.removeEventListener("resize", schedule);
       window.removeEventListener("hashchange", schedule);
+      window.removeEventListener(readingLinkEvent, onReadingLink);
       window.removeEventListener("pageshow", onPageShow);
       window.removeEventListener("popstate", onPopState);
     };

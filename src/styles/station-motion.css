@@ -139,20 +139,20 @@ html:has(.station-home) { scroll-behavior: auto; }
       z-index: 2;
       animation: none;
       opacity: 1;
-      clip-path: inset(0);
-      transition: opacity 200ms ease-out, clip-path 200ms var(--ef-snap), display 200ms allow-discrete;
+      transform: none;
+      transition: opacity 200ms ease-out, transform 200ms var(--ef-snap), display 200ms allow-discrete;
     }
     .station-home .compact-header :is(.header-popover, nav.header-directory)[hidden] {
       z-index: 1;
       pointer-events: none;
       opacity: 0;
-      clip-path: inset(0 0 85% 0);
+      transform: translateY(-6px);
       transition-duration: 130ms;
     }
     @starting-style {
       .station-home .compact-header :is(.header-popover, nav.header-directory):not([hidden]) {
         opacity: 0;
-        clip-path: inset(0 0 85% 0);
+        transform: translateY(-6px);
       }
     }
   }

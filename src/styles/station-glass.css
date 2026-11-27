@@ -1,0 +1,253 @@
+.station-home {
+  --glass-solid: #252e2e;
+  --glass-tint: rgb(23 30 31 / .72);
+  --glass-edge: rgb(231 243 235 / .17);
+  --glass-hover: rgb(233 243 237 / .10);
+  --glass-muted: #c9d1cd;
+}
+
+/* Keep the backdrop on the bar's own layer, so its menus can sample the page. */
+.station-home .compact-header.site-header {
+  background: transparent;
+  border-bottom: 1px solid transparent;
+  backdrop-filter: none;
+}
+.station-home .compact-header.site-header.is-scrolled::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0 0 -1px;
+  border-bottom: 1px solid var(--glass-edge);
+  background: #151d1e;
+  pointer-events: none;
+}
+.station-home .header-control {
+  min-height: 44px;
+  padding: 9px 14px;
+  gap: 12px;
+  border: 1px solid var(--glass-edge);
+  border-radius: 11px;
+  clip-path: none;
+  background: rgb(27 35 35 / .78);
+  color: var(--ef-ink);
+  font: 600 14px/1.45 var(--ef-font-ui);
+  transition: background-color 160ms, border-color 160ms;
+}
+.station-home .header-control:is([aria-expanded="true"], :hover) {
+  color: var(--ef-ink);
+  background: #303a38;
+  border-color: rgb(230 243 233 / .29);
+}
+.station-home .header-control[aria-expanded="true"] :is(.header-control__menu, .header-control__chevron) { color: var(--ef-signal); }
+
+.station-home .compact-header :is(.header-language, nav.header-directory) {
+  inset-inline-end: 0;
+  max-block-size: min(590px, calc(100dvh - 111px));
+  border: 1px solid var(--glass-edge);
+  border-radius: 18px;
+  background: var(--glass-solid);
+  background-image: linear-gradient(160deg, rgb(233 248 244 / .06), transparent 62%);
+  color: var(--ef-ink);
+  box-shadow: 0 18px 48px rgb(0 0 0 / .24);
+  scrollbar-color: #99a69e65 transparent;
+}
+.station-home .compact-header .header-language {
+  width: min(390px, calc(100vw - 40px));
+  padding: 12px;
+}
+.station-home .compact-header nav.header-directory {
+  width: min(728px, calc(100vw - 64px));
+  padding: 0;
+  overflow: hidden;
+}
+.station-home .compact-header nav.header-directory:not([hidden]) {
+  display: grid;
+  grid-template: auto minmax(0, 1fr) / minmax(0, 1fr);
+  gap: 0;
+  justify-content: stretch;
+  align-items: stretch;
+}
+.station-home .header-language .language-grid { gap: 4px; }
+.station-home .compact-header :is(.header-directory, .header-language) a {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 0;
+  border-radius: 9px;
+  color: var(--ef-ink);
+  font: 500 15px/1.45 var(--font-reading);
+  letter-spacing: 0;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+  transition: background-color 150ms;
+}
+.station-home .compact-header .header-language a { padding-inline: 18px; }
+.station-home .compact-header :is(.header-directory, .header-language) a:is([aria-current], :hover, :focus-visible) {
+  color: var(--ef-ink);
+  background: var(--glass-hover);
+}
+.station-home .compact-header :is(.header-directory, .header-language) a[aria-current] { font-weight: 650; }
+.station-home .compact-header .header-directory a[aria-current] { box-shadow: inset 2px 0 var(--ef-signal); }
+.station-home .compact-header .header-directory:dir(rtl) a[aria-current] { box-shadow: inset -2px 0 var(--ef-signal); }
+.station-home .compact-header .header-language [aria-current] span:last-child { color: var(--ef-signal); }
+
+.directory-search {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 11px;
+  min-height: 48px;
+  margin: 16px 16px 0;
+  padding-inline-start: 13px;
+  border: 1px solid var(--glass-edge);
+  border-radius: 11px;
+  background: rgb(9 14 14 / .24);
+  color: var(--glass-muted);
+}
+.directory-search:focus-within { border-color: var(--ef-signal); }
+.directory-search > svg, .directory-search button svg { width: 20px; height: 20px; }
+.directory-search input {
+  min-width: 0;
+  min-height: 44px;
+  padding: 0;
+  padding-inline-end: 8px;
+  outline: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ef-ink);
+  font: 500 16px/1.5 var(--font-reading);
+  text-align: start;
+}
+.directory-search input::placeholder { color: var(--glass-muted); opacity: 1; }
+.directory-search input::-webkit-search-cancel-button { appearance: none; }
+.directory-search button {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--ef-ink);
+  cursor: pointer;
+}
+.directory-search button:hover { background: var(--glass-hover); }
+
+.directory-body {
+  display: grid;
+  grid-template-columns: minmax(146px, .48fr) minmax(0, 1fr);
+  align-items: start;
+  min-height: 0;
+  margin-block-start: 12px;
+  padding: 0 16px 16px;
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+.directory-body ul { list-style: none; margin: 0; padding: 0; }
+.directory-caption, .directory-empty { margin: 2px 12px 7px; font: 500 14px/1.5 var(--font-reading); color: var(--glass-muted); }
+.directory-chapters { min-width: 0; padding-inline-end: 14px; }
+.directory-main { min-width: 0; padding-inline-start: 14px; border-inline-start: 1px solid var(--glass-edge); }
+.directory-empty { margin-block: 12px; }
+.directory-main .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.station-home .compact-header .header-directory .directory-results a {
+  align-items: stretch;
+  display: grid;
+  gap: 3px;
+  padding-block: 11px;
+}
+.directory-results li + li { border-top: 1px solid rgb(231 243 235 / .10); }
+.directory-result-path { color: var(--glass-muted); font: 550 .8125rem/1.4 var(--font-reading); }
+.directory-excerpt { font: 450 .9375rem/1.5 var(--font-reading); }
+.directory-excerpt mark { border-radius: 2px; background: #d8eb513b; color: inherit; }
+
+.station-home .about-art-layout .music-player {
+  padding: clamp(12px, 2vw, 22px);
+  border: 1px solid var(--glass-edge);
+  border-radius: 16px;
+  background: var(--glass-solid);
+}
+.station-home .music-cover { border-radius: 8px; }
+.station-home .music-track-list button { border-radius: 8px; }
+
+.station-home .field-tabs {
+  border: 1px solid var(--glass-edge);
+  border-radius: 17px;
+  padding: 6px;
+  background: var(--glass-solid);
+}
+.station-home .field-tabs .field-tab {
+  clip-path: none;
+  border: 1px solid rgb(233 243 237 / .10);
+  border-radius: 11px;
+  background: rgb(20 27 28 / .65);
+}
+.station-home .field-tabs .field-tab[aria-selected="true"] { background: #303b36; border-color: #d8eb5170; }
+.station-home .field-tabs .field-tab[aria-selected="true"] .field-card-index { background: #d8eb5120; color: var(--ef-signal); }
+.station-home .field-tabs .field-tab::before { display: none; }
+@media (hover: hover) {
+  .station-home .field-tabs .field-tab:not([aria-selected="true"]):hover { background: #323b37; color: var(--ef-ink); border-color: var(--glass-edge); }
+  .station-home .field-tabs .field-tab:hover :is(.field-card-symbol, .field-card-title) { color: var(--ef-ink); }
+  .station-home .field-tabs .field-tab:hover .field-card-index { background: transparent; color: var(--ef-muted); }
+}
+
+@supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .station-home .compact-header :is(.header-language, nav.header-directory) {
+    background-color: var(--glass-tint);
+    -webkit-backdrop-filter: blur(28px) saturate(.82);
+    backdrop-filter: blur(28px) saturate(.82);
+  }
+  .station-home .compact-header.site-header.is-scrolled::before {
+    background: rgb(16 22 23 / .80);
+    -webkit-backdrop-filter: blur(20px) saturate(.85);
+    backdrop-filter: blur(20px) saturate(.85);
+  }
+  .station-home .about-art-layout .music-player, .station-home .field-tabs {
+    background-color: var(--glass-tint);
+    -webkit-backdrop-filter: blur(16px) saturate(.92);
+    backdrop-filter: blur(16px) saturate(.92);
+  }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .station-home .compact-header :is(.header-language, nav.header-directory),
+  .station-home .compact-header.site-header.is-scrolled::before,
+  .station-home .about-art-layout .music-player, .station-home .field-tabs {
+    background-color: var(--glass-solid);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+
+.station-home main [data-search-target] { scroll-margin-block-start: 108px; }
+.station-home main [data-search-target]:focus-visible { outline: 2px solid #d8eb51ad; outline-offset: 4px; }
+
+@media (max-width: 760px) {
+  .station-home .compact-header nav.header-directory { width: min(620px, calc(100vw - 48px)); }
+}
+@media (max-width: 700px) {
+  .station-home .header-control { padding: 9px 10px; gap: 8px; }
+  .station-home .compact-header :is(.header-language, nav.header-directory),
+  .station-home.is-reading .compact-header :is(.header-language, nav.header-directory) {
+    width: min(400px, calc(100vw - 38px));
+    max-block-size: min(540px, calc(100dvh - 138px - env(safe-area-inset-bottom)));
+  }
+  .station-home.is-reading .compact-header :is(.header-language, nav.header-directory) {
+    max-block-size: min(540px, calc(100dvh - 72px - env(safe-area-inset-top) - env(safe-area-inset-bottom)));
+  }
+  .directory-search { margin: 11px 11px 0; }
+  .directory-body { grid-template-columns: minmax(0, .84fr) minmax(0, 1fr); padding: 0 10px 11px; }
+  .directory-chapters { padding-inline-end: 6px; }
+  .directory-main { padding-inline-start: 6px; }
+  .directory-caption { margin-inline: 9px; font-size: .8125rem; }
+  .station-home .compact-header .header-directory a { padding-inline: 9px; }
+  .station-home .header-directory[data-searching] .directory-body { grid-template-columns: minmax(0, 1fr); }
+  .station-home .header-directory[data-searching] .directory-chapters { display: none; }
+  .station-home .header-directory[data-searching] .directory-main { border: 0; padding-inline: 0; }
+  .station-home main [data-search-target] { scroll-margin-block-start: 132px; }
+  .station-home.is-reading main [data-search-target] { scroll-margin-block-start: 90px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .station-home .header-control, .station-home .compact-header :is(.header-directory, .header-language) a { transition: none; }
+}

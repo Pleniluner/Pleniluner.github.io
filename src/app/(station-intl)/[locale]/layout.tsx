@@ -12,6 +12,7 @@ import "@/styles/station-scenes.css";
 import "@/styles/station-endfield.css";
 import "@/styles/station-motion.css";
 import "@/styles/station-reading.css";
+import "@/styles/station-glass.css";
 export const dynamicParams = false;
 export function generateStaticParams() { return locales.filter(item => item.slug).map(item => ({locale: item.slug})); }
 export async function generateMetadata({params}: {params: Promise<{locale: string}>}) {

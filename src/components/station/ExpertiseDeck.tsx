@@ -4,14 +4,8 @@ import { useLayoutEffect, useReducer, useRef, type KeyboardEvent } from "react";
 import { useLanguage } from "./i18n/LanguageProvider";
 import { ProfileContent, profile } from "./ProfileContent";
 import { SectionArtwork } from "./SectionArtwork";
+import { fieldSubjects as subjects, readingLinkEvent } from "./navigation";
 
-const subjects = [
-  { id: "computing", section: "computing", layout: "folds" },
-  { id: "tools", section: "tools", layout: "folds" },
-  { id: "architecture", section: "architecture", layout: "folds" },
-  { id: "learning", section: "mathematics", layout: "plain" },
-  { id: "radio", section: "radio", layout: "plain" },
-] as const;
 type SubjectId = typeof subjects[number]["id"];
 type Selection = { id: SubjectId; backward: boolean; enhanced: boolean };
 
@@ -78,25 +72,28 @@ export function ExpertiseDeck() {
 
   useLayoutEffect(() => {
     let scrollFrame = 0;
-    function followAnchor(initial: boolean) {
+    function followAnchor(scroll: boolean, fallback = false) {
       const target = document.getElementById(window.location.hash.slice(1));
       const id = target?.closest<HTMLElement>("[data-subject]")?.dataset.subject ?? target?.id;
       const subject = subjects.find(item => item.id === id);
-      if (subject || initial) setActive(subject?.id ?? "computing");
+      if (subject || fallback) setActive(subject?.id ?? "computing");
       cancelAnimationFrame(scrollFrame);
-      if (initial || !subject || !target) return;
+      if (!scroll || !subject || !target) return;
       scrollFrame = requestAnimationFrame(() => {
         const destination = target.id === subject.id ? frame.current : target;
         destination?.scrollIntoView({ block: "start", behavior: "instant" });
       });
     }
     // The browser already follows links to the static headings before hydration.
-    followAnchor(true);
-    const onHashChange = () => followAnchor(false);
+    followAnchor(false, true);
+    const onHashChange = () => followAnchor(!window.history.state?.stationReading);
+    const onReadingLink = () => followAnchor(false);
     window.addEventListener("hashchange", onHashChange);
+    window.addEventListener(readingLinkEvent, onReadingLink);
     return () => {
       cancelAnimationFrame(scrollFrame);
       window.removeEventListener("hashchange", onHashChange);
+      window.removeEventListener(readingLinkEvent, onReadingLink);
     };
   }, []);
 
@@ -152,7 +149,7 @@ export function ExpertiseDeck() {
         hidden={enhanced && active !== subject.id}
       >
         <header id={enhanced ? undefined : subject.id} className="section-header field-heading">
-          <h2 id={`${subject.id}-heading`}>{t(profile.sections[subject.section].title)}</h2>
+          <h2 id={`${subject.id}-heading`} data-search-target>{t(profile.sections[subject.section].title)}</h2>
         </header>
         <ProfileContent section={subject.section} layout={subject.layout} />
       </div>)}

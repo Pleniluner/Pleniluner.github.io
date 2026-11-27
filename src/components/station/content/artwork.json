@@ -35,6 +35,116 @@
         "height": 943,
         "bytes": 124824
       }
+    ],
+    "mobile": [
+      {
+        "media": "(max-width: 700px) and (min-height: 820px) and (max-aspect-ratio: 1/2)",
+        "sizes": "123vw",
+        "width": 849,
+        "height": 943,
+        "variants": [
+          {
+            "src": "media/artwork/kaguya-tall-480-8768d72562.webp",
+            "width": 480,
+            "height": 533,
+            "bytes": 41378
+          },
+          {
+            "src": "media/artwork/kaguya-tall-640-8768d72562.webp",
+            "width": 640,
+            "height": 711,
+            "bytes": 63290
+          },
+          {
+            "src": "media/artwork/kaguya-tall-840-8768d72562.webp",
+            "width": 840,
+            "height": 933,
+            "bytes": 87564
+          },
+          {
+            "src": "media/artwork/kaguya-tall-849-8768d72562.webp",
+            "width": 849,
+            "height": 943,
+            "bytes": 87992
+          }
+        ]
+      },
+      {
+        "media": "(max-width: 500px) and (max-aspect-ratio: 5/8)",
+        "sizes": "161vw",
+        "width": 1113,
+        "height": 943,
+        "variants": [
+          {
+            "src": "media/artwork/kaguya-phone-480-7ce33f3a6a.webp",
+            "width": 480,
+            "height": 407,
+            "bytes": 32814
+          },
+          {
+            "src": "media/artwork/kaguya-phone-640-7ce33f3a6a.webp",
+            "width": 640,
+            "height": 542,
+            "bytes": 50420
+          },
+          {
+            "src": "media/artwork/kaguya-phone-840-7ce33f3a6a.webp",
+            "width": 840,
+            "height": 712,
+            "bytes": 73040
+          },
+          {
+            "src": "media/artwork/kaguya-phone-1080-7ce33f3a6a.webp",
+            "width": 1080,
+            "height": 915,
+            "bytes": 103000
+          },
+          {
+            "src": "media/artwork/kaguya-phone-1113-7ce33f3a6a.webp",
+            "width": 1113,
+            "height": 943,
+            "bytes": 106328
+          }
+        ]
+      },
+      {
+        "media": "(max-width: 700px) and (max-aspect-ratio: 5/6)",
+        "sizes": "199vw",
+        "width": 1377,
+        "height": 943,
+        "variants": [
+          {
+            "src": "media/artwork/kaguya-portrait-480-54ffd152b5.webp",
+            "width": 480,
+            "height": 329,
+            "bytes": 24554
+          },
+          {
+            "src": "media/artwork/kaguya-portrait-640-54ffd152b5.webp",
+            "width": 640,
+            "height": 438,
+            "bytes": 38662
+          },
+          {
+            "src": "media/artwork/kaguya-portrait-840-54ffd152b5.webp",
+            "width": 840,
+            "height": 575,
+            "bytes": 57324
+          },
+          {
+            "src": "media/artwork/kaguya-portrait-1080-54ffd152b5.webp",
+            "width": 1080,
+            "height": 740,
+            "bytes": 81846
+          },
+          {
+            "src": "media/artwork/kaguya-portrait-1377-54ffd152b5.webp",
+            "width": 1377,
+            "height": 943,
+            "bytes": 113736
+          }
+        ]
+      }
     ]
   },
   "images/starlight.jpg": {

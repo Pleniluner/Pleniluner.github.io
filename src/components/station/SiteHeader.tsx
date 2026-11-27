@@ -1,14 +1,16 @@
 "use client";
 import { useEffect, useRef, useState, type MouseEvent } from "react";
+import { flushSync } from "react-dom";
 import { useLanguage } from "./i18n/LanguageProvider";
 import { locales, localeInfo, localeHref, type Locale } from "./i18n/locales";
 import { StationMark } from "./StationMark";
-import { rememberReadingPosition, useReadingPosition } from "./navigation";
-const links = [["top","s055"],["about","s058"],["now","s077"],["computing","s143"],["interests","s083"],["gear","s085"],["contact","s095"]];
+import { DirectorySearch, indexDirectory } from "./DirectorySearch";
+import { readingLinkEvent, rememberReadingPosition, useReadingPosition } from "./navigation";
 export function SiteHeader() {
   const { locale, t } = useLanguage();
-  const { headerRef, anchor, directory, openFolds } = useReadingPosition();
+  const { headerRef, anchor, directory, subject, openFolds } = useReadingPosition();
   const [panel, setPanel] = useState<"language" | "directory" | null>(null);
+  const [entries, setEntries] = useState<ReturnType<typeof indexDirectory>>([]);
   const controls = useRef<HTMLDivElement>(null);
   const languageButton = useRef<HTMLButtonElement>(null);
   const directoryButton = useRef<HTMLButtonElement>(null);
@@ -22,13 +24,33 @@ export function SiteHeader() {
     event.preventDefault();
     languageButton.current?.focus({ preventScroll: true });
   }
+  function toggleDirectory() {
+    if (panel !== "directory") setEntries(indexDirectory());
+    setPanel(panel === "directory" ? null : "directory");
+  }
+  function readResult(target: HTMLElement, href: string) {
+    const url = new URL(href, window.location.href);
+    if (url.href !== window.location.href) {
+      rememberReadingPosition(anchor);
+      window.history.pushState(null, "", url);
+    }
+    // Open the parent notes and commit the selected tab before moving focus.
+    flushSync(() => {
+      setPanel(null);
+      window.dispatchEvent(new Event(readingLinkEvent));
+    });
+    if (!target.matches("a, button, summary, [tabindex]")) target.tabIndex = -1;
+    target.focus({ preventScroll: true });
+    target.scrollIntoView({ block: "start", behavior: "instant" });
+  }
   useEffect(() => {
     if (!panel) return;
     const outside = (event: PointerEvent) => {
       if (event.target instanceof Node && !controls.current?.contains(event.target)) setPanel(null);
     };
     const escape = (event: KeyboardEvent) => {
-      if (event.key !== "Escape") return;
+      if (event.key !== "Escape" || event.isComposing) return;
+      event.preventDefault();
       setPanel(null);
       (panel === "language" ? languageButton : directoryButton).current?.focus();
     };
@@ -60,7 +82,7 @@ export function SiteHeader() {
         </button>
         <button type="button" ref={directoryButton} className="header-control header-control--directory" aria-label={t("s127")}
           aria-expanded={panel === "directory"} aria-controls="header-directory"
-          onClick={() => setPanel(panel === "directory" ? null : "directory")}>
+          onClick={toggleDirectory}>
           <span>{t("s129")}</span>
           <svg className="header-control__menu" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
             <path d={panel === "directory" ? "m5 5 14 14M5 19 19 5" : "M4 8h16M4 16h16"} stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -76,12 +98,8 @@ export function SiteHeader() {
           </a>
         )}</div>
       </div>
-      <nav id="header-directory" className="header-popover header-directory" aria-label={t("s131")} hidden={panel !== "directory"} inert={panel !== "directory"}>
-        <div className="header-directory__links">{links.map(([id,key]) =>
-          <a key={id} href={"#" + id} aria-current={id === directory ? "location" : undefined}
-            onClick={() => { setPanel(null); directoryButton.current?.focus({ preventScroll: true }); }}>{t(key)}</a>
-        )}</div>
-      </nav>
+      <DirectorySearch open={panel === "directory"} directory={directory} subject={subject} openFolds={openFolds} entries={entries}
+        onRead={readResult} onNavigate={() => { setPanel(null); directoryButton.current?.focus({ preventScroll: true }); }} />
     </div>
   </header>;
 }

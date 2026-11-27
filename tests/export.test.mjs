@@ -60,6 +60,29 @@ test('artwork delivery preserves complete frames, alpha and exported image sourc
   }
  }
 });
+
+test('only the hero offers smaller art-directed sources for phone viewports', async () => {
+  const artwork = JSON.parse(await readFile('src/components/station/content/artwork.json', 'utf8'));
+  const hero = artwork['images/kaguya.png'];
+  const html = await readFile(join(root, 'index.html'), 'utf8');
+  const picture = html.match(/<div class="hero-art"[^>]*>(<picture[\s\S]*?<\/picture>)/)?.[1];
+  assert.ok(picture, 'a responsive picture is rendered on the first screen');
+  assert.deepEqual(Object.keys(artwork).filter(path => artwork[path].mobile), ['images/kaguya.png']);
+  for (const frame of hero.mobile) {
+    assert.ok(picture.includes(`media="${frame.media}"`));
+    assert.ok(frame.width < hero.width);
+    assert.equal(frame.height, hero.height);
+    for (const variant of frame.variants) {
+      const file = join(root, variant.src);
+      const metadata = await sharp(file).metadata();
+      assert.ok(picture.includes(`${base}/${variant.src} ${variant.width}w`));
+      assert.equal(metadata.width, variant.width);
+      assert.ok(Math.abs(metadata.height - frame.height * variant.width / frame.width) <= 1);
+      assert.ok((await stat(file)).size < hero.variants.at(-1).bytes);
+    }
+  }
+  assert.match(picture, new RegExp(`/${hero.variants.at(-1).src}`));
+});
 test('local fonts, audio and domain metadata are present',async()=>{
  for(const file of await readdir(root,{recursive:true})){
   if(!file.endsWith('.css'))continue;
@@ -92,6 +115,10 @@ test('shared pages expose their reading paths and share card before JavaScript r
     assert.ok(source.includes('https://www.pixiv.net/artworks/136960564'));
     assert.ok(source.includes('https://www.pixiv.net/artworks/104450545'));
     assert.match(source, /<figure class="cited-passage">[\s\S]*?<blockquote[\s\S]*?<figcaption><a href="#anniversary-quote">/);
+    const readingIds = Array.from(source.matchAll(/<[^>]*\sdata-search-target(?:="[^"]*")?[^>]*>/g), match => match[0].match(/\sid="([^"]+)"/)?.[1]);
+    assert.ok(readingIds.length > 100, `missing search destinations on /${route}`);
+    assert.ok(readingIds.every(Boolean) && new Set(readingIds).size === readingIds.length, `search destinations must have unique IDs on /${route}`);
+    assert.ok(readingIds.includes('text-p097') && readingIds.includes('text-p135'));
   }
   const missing = (await readFile(join(root, '404.html'), 'utf8')).replace(/<script\b[^>]*>[\s\S]*?<\/script>/g, '');
   assert.ok(missing.includes('这个页面没有找到') && missing.includes(`href="${base}/#now"`));

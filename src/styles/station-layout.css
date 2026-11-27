@@ -132,10 +132,6 @@
 .station-home .voice-line-player { margin-top: 28px; padding-block: 20px; }
 
 /* Compact language choices; the checkmark never offsets the centered label. */
-.station-home .header-popover,
-.station-home .compact-header nav.header-directory { background: #14191a; }
-.station-home .header-language { width: min(336px, calc(100vw - 36px)); padding: 20px 16px; border-radius: 12px; }
-.station-home .header-language .header-popover__caption { text-align: center; margin-bottom: 14px; font: 12px/1.5 var(--font-reading); }
 .station-home .language-grid { gap: 2px 4px; }
 .station-home .language-grid a { position: relative; justify-content: center; padding: 10px 20px; min-height: 44px; text-align: center; font-size: 14px; }
 .station-home .language-grid a > span:last-child { position: absolute; inset-inline-end: 6px; font-size: 12px; }

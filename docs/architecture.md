@@ -6,7 +6,7 @@
 
 - `src/app/` 保留中文首页、`/chinese/` 兼容地址与十一种其他语言路线。
 - `src/components/station/Station.tsx` 组装首页。播放器、目录、语录和内容分区各自维护状态。
-- `src/styles/` 继续使用现有版式和 Endfield 风格控件。
+- `src/styles/station-glass.css` 定义导航、领域标签和播放器的半透明表面。正文与插画各自保留阅读和展示所需的对比度。系统选择减少透明度时显示实色面板。
 - `public/images/` 保存当前使用的原始插画；`public/audio/` 保存原有录音；`public/icons/` 保存同一套圆弧标志。
 - `scripts/prepare-artwork.mjs` 根据原图生成 WebP 和图片清单。生成的 WebP 不进入 Git，由 `predev` 和 `prebuild` 自动准备。
 - `src/assets/fonts/` 仅保留实际使用的 Saira、Courier Prime、Noto Serif SC 及其 OFL 许可证。
@@ -17,9 +17,11 @@
 
 目录和语言菜单共用 `navigation.ts` 识别屏幕里的章节。语言链接携带章节或已选领域标签的锚点。切换语言前，页面在当前浏览器历史记录里保存阅读位置，后退时用它还原正文。周年语录的语言由播放器单独管理。
 
+目录打开时从当前语言的正文读取可搜索内容，包括未显示的领域面板和折叠资料。命中后使用同一个可分享地址表达段落（例如 `#text-p097`）与其父级折叠项（例如 `?open=modeling`）。从菜单点过去时在当前页选中领域，展开资料并定位到结果。切换语言时，仍在屏幕上的段落继续作为落点。
+
 静态 HTML 按顺序给出五个领域的锚点和正文，脚本加载后才切换为标签。展开的资料以稳定名称写入链接，例如 `?open=cad-bim#note-cad-bim`，译文可以打开同一项。语录在已有对应录音时跟随页面语言，音乐播放器在换曲时沿用原来的播放状态。
 
-手机竖屏把问候语排在辉夜图下，让月面和双眼都留在画面中。页眉在离开首屏后收成一行，回到顶部再显示完整字标。正文里的两幅全幅插画各自使用独立的画作信息折叠项，展开可查看原作和画师主页。
+手机竖屏把问候语排在辉夜图下，让月面和双眼都留在画面中。`prepare-artwork.mjs` 只为辉夜首图生成保持同一取景中心的竖屏文件。`<picture>` 按宽高比和像素密度选载。页眉在离开首屏后收成一行，回到顶部再显示完整字标。正文里的两幅全幅插画各自使用独立的画作信息折叠项，展开可查看原作和画师主页。
 
 分享卡是 `public/images/station-share-v1.jpg`（1200 × 630）。更新首图或标志后可运行 `node scripts/render-share-card.mjs` 重新生成。题字来自随站分发的 Noto Serif SC 和 Saira，矢量稿位于 `scripts/share-card-type.svg`。Pages 的错误页由 `src/app/global-not-found.tsx` 导出到 `out/404.html`。
 

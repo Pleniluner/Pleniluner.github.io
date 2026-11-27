@@ -4,9 +4,6 @@
 .station-home .compact-header .wordmark { display:flex; align-items:baseline; flex-wrap:wrap; gap:4px 8px; direction:ltr; }
 .station-home .compact-header .wordmark > span { font-size:27px; font-weight:600; letter-spacing:.02em; }
 .station-home .compact-header .wordmark small { display:block; font:400 14px/1.5 Georgia,serif; letter-spacing:0; color:#d5dcd8; }
-.station-home .compact-header nav.header-directory { width:min(280px,calc(100vw - 36px)); padding:14px 18px; border-radius:10px; }
-.station-home .header-directory__links { grid-template-columns:repeat(2,minmax(0,1fr)); gap:0 18px; }
-.station-home .compact-header nav.header-directory a { display:flex; align-items:center; min-height:44px; padding:8px 0; font:400 16px/1.5 var(--font-reading); }
 
 .station-home .illustrated-section,
 .station-home .about-panel--continuation {
