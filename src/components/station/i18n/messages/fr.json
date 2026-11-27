@@ -150,5 +150,7 @@
   "musicRoomAlt": "Une jeune fille est assise près de la fenêtre. Le soleil éclaire un magnétophone à bandes et des pavillons cuivrés à côté d’elle.",
   "copyEmail": "Copier l’adresse e-mail",
   "emailCopied": "Adresse e-mail copiée",
-  "emailSelect": "L’adresse est sélectionnée. Vous pouvez la copier manuellement."
+  "emailSelect": "L’adresse est sélectionnée. Vous pouvez la copier manuellement.",
+  "readChineseOriginal": "Lire le texte original en chinois",
+  "workstationSignal": "Du traitement d’image au décodage radio"
 }

@@ -5,37 +5,46 @@ import { useLanguage } from "./i18n/LanguageProvider";
 import structure from "./content/profile-structure.json";
 import { InterestIllustration } from "./InterestIllustration";
 import { foldName } from "./foldNames";
+import chineseProfile from "./i18n/profile/zh-CN.json";
+import chineseMessages from "./i18n/messages/zh-CN.json";
 
 type Block = { type: string; source?: string; href?: string; key?: string; items?: string[]; rows?: string[][]; blocks?: Block[] };
 type Section = { title: string; blocks: Block[] };
 export const profile = structure as { sections: Record<string, Section>; closing: string; tagline: string };
+const chineseCopy: Record<string, string> = { ...chineseProfile, ...chineseMessages };
 
 function searchTarget(key: string, paragraphIndex = 0) {
   return { id: `text-${key}${paragraphIndex ? `-${paragraphIndex + 1}` : ""}`, "data-search-target": true };
 }
 
-function Inline({ text }: { text: string }) {
+function Inline({ text, paragraph }: { text: string; paragraph?: string }) {
   return <>{text.split(/(\*\*[^*]+\*\*|\[[^\]]+\]\(https:\/\/[^)\s]+\))/g).map((part, index) => {
-    if (part.startsWith("**") && part.endsWith("**")) return <strong dir="auto" key={index}>{part.slice(2, -2)}</strong>;
+    if (part.startsWith("**") && part.endsWith("**")) {
+      const label = part.slice(2, -2);
+      return <strong dir="auto" key={index}>{paragraph === "p020" && label === "Minecraft" ? <a href="#text-p151">{label}</a> : label}</strong>;
+    }
     const link = part.match(/^\[([^\]]+)\]\((https:\/\/[^)\s]+)\)$/);
     if (link) return <a key={index} href={link[2]} target="_blank" rel="noreferrer">{link[1]}</a>;
     return <Fragment key={index}>{part}</Fragment>;
   })}</>;
 }
 
-export function ProfileBlocks({ blocks, revealItems = false }: { blocks: Block[]; revealItems?: boolean }) {
+export function ProfileBlocks({ blocks, revealItems = false, original = false }: { blocks: Block[]; revealItems?: boolean; original?: boolean }) {
   const { t } = useLanguage();
+  const copy = original ? (key: string) => chineseCopy[key] : t;
+  const target = (key: string, paragraphIndex?: number) => original ? {} : searchTarget(key, paragraphIndex);
   return <>{blocks.map((block, index) => {
     const id = block.key ?? block.items?.[0] ?? block.rows?.[0]?.[0] ?? String(index);
+    if (original && block.type === "details") return <ProfileBlocks key={id} blocks={block.blocks!} original />;
     if (block.type === "heading") return <h3 key={id} {...searchTarget(id)}><Inline text={t(block.key!)} /></h3>;
     if (block.type === "subheading") return <h3 className="profile-subheading" key={id} {...searchTarget(id)}><Inline text={t(block.key!)} /></h3>;
     if (block.type === "quotation") return <figure className="cited-passage" key={id}>
-      <blockquote dir="auto">{block.items!.map(line => <p key={line} {...searchTarget(line)}>{t(line)}</p>)}</blockquote>
-      <figcaption><a href={block.href}>{t(block.source!)}</a></figcaption>
+      <blockquote dir="auto">{block.items!.map(line => <p key={line} {...target(line)}>{copy(line)}</p>)}</blockquote>
+      <figcaption><a href={block.href}>{copy(block.source!)}</a></figcaption>
     </figure>;
-    if (block.type === "paragraph") return <Fragment key={id}>{t(block.key!).split("\n\n").map((paragraph, paragraphIndex) => <Fragment key={paragraphIndex}>
+    if (block.type === "paragraph") return <Fragment key={id}>{copy(block.key!).split("\n\n").map((paragraph, paragraphIndex) => <Fragment key={paragraphIndex}>
       {paragraphIndex > 0 ? "\n\n" : null}
-      <p className="profile-copy" dir="auto" {...searchTarget(id, paragraphIndex)}><Inline text={paragraph} /></p>
+      <p className="profile-copy" dir="auto" {...target(id, paragraphIndex)}><Inline text={paragraph} paragraph={block.key} /></p>
     </Fragment>)}</Fragment>;
     if (block.type === "details" && block.key === "p153") return <details className="profile-fold game-fold" key={id} data-reading-fold={foldName(id)}>
       <summary data-reveal="line" {...searchTarget(id)}><span>{t(block.key)}</span><span className="profile-fold__mark" aria-hidden="true" /></summary>
@@ -71,7 +80,7 @@ export function ProfileBlocks({ blocks, revealItems = false }: { blocks: Block[]
 }
 
 export function ProfileContent({ section, layout = "plain" }: { section: string; layout?: "plain" | "rows" | "folds" | "grid" }) {
-  const { t } = useLanguage();
+  const { t, locale } = useLanguage();
   const blocks = profile.sections[section].blocks;
   if (layout === "plain") return <div className="profile-content"><ProfileBlocks blocks={blocks} /></div>;
   const preamble: Block[] = [];
@@ -89,7 +98,17 @@ export function ProfileContent({ section, layout = "plain" }: { section: string;
       </details> :
       <article className={group.key === "p021" ? "profile-plans" : "profile-row"} key={group.key} data-profile-group={group.key} data-reveal={group.key === "p021" ? undefined : "line"}>
         {section === "interests" && <InterestIllustration kind={group.key} />}
-        <h3 {...searchTarget(group.key)}>{t(group.key)}</h3><div><ProfileBlocks blocks={group.blocks} revealItems={group.key === "p021"} /></div>
+        <h3 {...searchTarget(group.key)}>{t(group.key)}</h3>
+        <div>
+          <ProfileBlocks blocks={group.blocks} revealItems={group.key === "p021"} />
+          {locale !== "zh-CN" && (group.key === "p138" || group.key === "p141") && <details className="profile-fold profile-original">
+            <summary><span>{t("readChineseOriginal")}</span><span className="profile-fold__mark" aria-hidden="true" /></summary>
+            <div className="profile-original__body" lang="zh-CN" dir="ltr">
+              <p className="profile-original__title">{chineseCopy[group.key]}</p>
+              <ProfileBlocks blocks={group.blocks} original />
+            </div>
+          </details>}
+        </div>
       </article>
     )}</div>
   </div>;

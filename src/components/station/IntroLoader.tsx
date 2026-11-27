@@ -5,10 +5,12 @@ import { useLanguage } from "./i18n/LanguageProvider";
 import { bootMotion } from "./rhine-timing/boot-motion";
 import { StationMark } from "./StationMark";
 import { isHistoryTraversal } from "./navigation";
+import { directoryQueryKey } from "./directoryQuery";
 
 // Timing data is adapted from RhineLabUI; attribution is in rhine-timing/LICENSE.
 const TIMELINE_START = 1.76;
 const TIMELINE_END = 20.9;
+const OPENING_DURATION = 6200;
 const EXIT_DURATION = 800;
 
 function arc(radius: number, start: number, sweep: number, x = 960, y = 540) {
@@ -28,10 +30,11 @@ export function IntroLoader() {
   useEffect(() => {
     const root = document.documentElement;
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const replay = new URLSearchParams(window.location.search).get("intro") === "1";
+    const params = new URLSearchParams(window.location.search);
+    const replay = params.get("intro") === "1";
     const skipsForAnchor = !replay && Boolean(window.location.hash);
     const restoringScroll = isHistoryTraversal();
-    if (reduced.matches || skipsForAnchor || restoringScroll) {
+    if (reduced.matches || skipsForAnchor || restoringScroll || params.has(directoryQueryKey)) {
       root.dataset.stationIntro = "done";
       let active = true;
       queueMicrotask(() => { if (active) setVisible(false); });
@@ -76,14 +79,21 @@ export function IntroLoader() {
       root.dataset.stationIntro = "done";
       setVisible(false);
     };
-    const safetyTimer = window.setTimeout(finish, (TIMELINE_END - TIMELINE_START) * 1000 + EXIT_DURATION + 2000);
+    const safetyTimer = window.setTimeout(finish, OPENING_DURATION + EXIT_DURATION + 1000);
     dismiss.current = finish;
     const onKey = (event: KeyboardEvent) => {
+      const skipButton = overlay.querySelector<HTMLButtonElement>(".intro-loader__skip");
+      if (!finished && event.key === "Tab" && skipButton && document.activeElement !== skipButton) {
+        event.preventDefault();
+        skipButton.focus();
+        return;
+      }
       if (["Escape", "Tab", "Enter", " ", "ArrowDown", "ArrowUp", "PageDown", "PageUp"].includes(event.key)) finish();
     };
     const tick = (now: number) => {
       if (finished) return;
-      const motion = bootMotion(Math.min(TIMELINE_END, TIMELINE_START + (now - startedAt) / 1000));
+      const progress = Math.min(1, (now - startedAt) / OPENING_DURATION);
+      const motion = bootMotion(TIMELINE_START + progress * (TIMELINE_END - TIMELINE_START));
       if (overlay.dataset.phase !== motion.step) overlay.dataset.phase = motion.step;
       set("--access-alpha", motion.accessOpacity);
       set("--logo-alpha", Number(motion.logoOpacity));
@@ -91,14 +101,10 @@ export function IntroLoader() {
       set("--logo-symbol-alpha", motion.logo.symbolScale);
       set("--logo-text-alpha", motion.logoLetters.length / 9);
       set("--auth-alpha", motion.authOpacity);
-      set("--brand-alpha", motion.brand[0].opacity);
       set("--scan-alpha", motion.scanVisible ? motion.ringOpacity : 0);
       set("--scan-message-alpha", motion.scanVisible ? motion.permissionOpacity : 0);
       set("--welcome-alpha", motion.welcomeVisible ? motion.welcomeOpacity : 0);
-      set("--welcome-scale", motion.welcomeScale);
       set("--welcome-highlight", motion.highlight);
-      set("--welcome-detail-alpha", Number(motion.companyVisible));
-      set("--welcome-flash", motion.welcomePanel);
 
       write(access, "A SIGNAL FROM THE STARS".slice(0, motion.access.length));
       const line = motion.f < 363 ? "SIGNAL FOUND : PLENILUNER" : motion.f < 421 ? "STATION READY" : "OPENING STATION...";
@@ -133,7 +139,7 @@ export function IntroLoader() {
         });
         if (core) core.setAttribute("r", String(motion.ornament ? motion.coreRadius : 0));
       }
-      if (!leaving && motion.t >= TIMELINE_END + 5) {
+      if (!leaving && progress === 1) {
         leaving = true;
         root.dataset.stationIntro = "revealing";
         overlay.classList.add("is-leaving");
@@ -170,7 +176,7 @@ export function IntroLoader() {
         <path d="m4 3.5 4.5 4.5L4 12.5M12 3.5v9" />
       </svg>
     </button>
-    <div className="intro-loader__corners" aria-hidden="true"><span>PLENILUNER</span><span>SPACE STATION</span><i /></div>
+    <div className="intro-loader__stage" aria-hidden="true">
     <div className="intro-loader__access" aria-hidden="true" dir="ltr" />
     <div className="intro-loader__identity" aria-hidden="true" dir="ltr">
       <div className="intro-loader__mark">
@@ -195,10 +201,10 @@ export function IntroLoader() {
       <span dir="ltr">PAX OMNIBUS.</span>
     </div>
     <div className="intro-loader__welcome" aria-hidden="true">
+      <StationMark />
       <span>{t("s135")}</span>
       <strong dir="ltr">PLENILUNER</strong>
-      <small dir="ltr">SPACE STATION</small>
-      <StationMark />
+    </div>
     </div>
   </div></>;
 }

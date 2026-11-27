@@ -150,5 +150,7 @@
   "musicRoomAlt": "A girl sits by the window. Sunlight catches the reel-to-reel tape recorder and copper-coloured horns beside her.",
   "copyEmail": "Copy email address",
   "emailCopied": "Email address copied",
-  "emailSelect": "Email address selected. You can copy it manually."
+  "emailSelect": "Email address selected. You can copy it manually.",
+  "readChineseOriginal": "Read the Chinese original",
+  "workstationSignal": "From image processing to radio decoding"
 }

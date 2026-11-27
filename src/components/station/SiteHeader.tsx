@@ -6,11 +6,13 @@ import { locales, localeInfo, localeHref, type Locale } from "./i18n/locales";
 import { StationMark } from "./StationMark";
 import { DirectorySearch, indexDirectory } from "./DirectorySearch";
 import { readingLinkEvent, rememberReadingPosition, useReadingPosition } from "./navigation";
+import { directoryQueryKey, directoryQueryLimit } from "./directoryQuery";
 export function SiteHeader() {
   const { locale, t } = useLanguage();
   const { headerRef, anchor, directory, subject, openFolds } = useReadingPosition();
   const [panel, setPanel] = useState<"language" | "directory" | null>(null);
   const [entries, setEntries] = useState<ReturnType<typeof indexDirectory>>([]);
+  const [initialQuery, setInitialQuery] = useState("");
   const controls = useRef<HTMLDivElement>(null);
   const languageButton = useRef<HTMLButtonElement>(null);
   const directoryButton = useRef<HTMLButtonElement>(null);
@@ -43,6 +45,16 @@ export function SiteHeader() {
     target.focus({ preventScroll: true });
     target.scrollIntoView({ block: "start", behavior: "instant" });
   }
+  useEffect(() => {
+    const search = new URLSearchParams(window.location.search).get(directoryQueryKey);
+    if (search === null) return;
+    const frame = requestAnimationFrame(() => {
+      setInitialQuery(search.trim().slice(0, directoryQueryLimit));
+      setEntries(indexDirectory());
+      setPanel("directory");
+    });
+    return () => cancelAnimationFrame(frame);
+  }, []);
   useEffect(() => {
     if (!panel) return;
     const outside = (event: PointerEvent) => {
@@ -98,7 +110,7 @@ export function SiteHeader() {
           </a>
         )}</div>
       </div>
-      <DirectorySearch open={panel === "directory"} directory={directory} subject={subject} openFolds={openFolds} entries={entries}
+      <DirectorySearch key={initialQuery} initialQuery={initialQuery} open={panel === "directory"} directory={directory} subject={subject} openFolds={openFolds} entries={entries}
         onRead={readResult} onNavigate={() => { setPanel(null); directoryButton.current?.focus({ preventScroll: true }); }} />
     </div>
   </header>;

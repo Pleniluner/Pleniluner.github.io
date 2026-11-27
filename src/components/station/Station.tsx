@@ -98,17 +98,28 @@ const socialLinks = [
               <p id="text-s061" data-search-target>{t("s061")}</p>
               <details className="about-name-details" data-reading-fold="name">
                 <summary id="text-s062" data-search-target>{t("s062")}</summary>
-              <p id="note-name" data-search-target>
-                {t("s063")}<a href="https://www.thwiki.cc/%E7%9B%88%E6%9C%88%E7%B4%80%E5%B9%B4%EF%BD%9EPlenilune_Annals" target="_blank" rel="noreferrer">{t("s064")}</a>{t("s065")}</p>
-              <p id="text-s066" data-search-target>
-                {t("s066")}<a href="https://music.apple.com/us/album/elysias-heart-feat-enzalla-single/1082112757" target="_blank" rel="noreferrer">Elysia&apos;s Heart</a>{t("s067")}</p>
-                <p>
-                  <a href="#elysias-heart-player" onClick={event => {
-                    if (!event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey && event.button === 0) {
-                      musicPlayer.current?.playElysiasHeart();
-                    }
-                  }}>{t("s106")} <bdi lang="en">Elysia’s Heart</bdi></a>
-                </p>
+                <div className="name-story">
+                  <section className="name-story__thread">
+                    <h3 id="note-name" data-search-target>Pleniluner</h3>
+                    <ol className="name-story__path" lang="zh-CN" dir="ltr" role="list">
+                      <li>盈月</li><li>银月</li><li>清月</li>
+                    </ol>
+                    <p id="text-s063" data-search-target>
+                      {t("s063")}<a href="https://www.thwiki.cc/%E7%9B%88%E6%9C%88%E7%B4%80%E5%B9%B4%EF%BD%9EPlenilune_Annals" target="_blank" rel="noreferrer">{t("s064")}</a>{t("s065")}
+                    </p>
+                  </section>
+                  <section className="name-story__thread">
+                    <h3>Elysia</h3>
+                    <p id="text-s066" data-search-target>
+                      {t("s066")}<a href="https://music.apple.com/us/album/elysias-heart-feat-enzalla-single/1082112757" target="_blank" rel="noreferrer">Elysia&apos;s Heart</a>{t("s067")}
+                    </p>
+                    <a className="name-story__song" href="#elysias-heart-player" onClick={event => {
+                      if (!event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey && event.button === 0) {
+                        musicPlayer.current?.playElysiasHeart();
+                      }
+                    }}>{t("s106")} <bdi lang="en">Elysia’s Heart</bdi></a>
+                  </section>
+                </div>
               </details>
               <div className="about-biography-copy">
                 <ProfileBlocks blocks={profile.sections.intro.blocks.slice(1)} />
@@ -198,7 +209,10 @@ const socialLinks = [
               <span className="section-kicker">{t("s085")}</span>
               <h2 id="gear-title" data-search-target>{t(profile.sections.devices.title)}</h2>
               {locale.startsWith("zh") && <p className="workstation-name" lang="en" dir="ltr">Pleniluner’s Workstation</p>}
-              <div className="workstation-intro"><ProfileBlocks blocks={[profile.sections.devices.blocks[0]]} /></div>
+              <div className="workstation-intro">
+                <ProfileBlocks blocks={[profile.sections.devices.blocks[0]]} />
+                <a href="#text-p135">{t("workstationSignal")}</a>
+              </div>
             </div>
             <div className="profile-content workstation-details"><ProfileBlocks blocks={profile.sections.devices.blocks.slice(1)} /></div>
           </div>

@@ -32,6 +32,7 @@ npm run dev
 | --- | --- |
 | 页面入口与首页布局 | [页面路由](src/app/) · [首页组件](src/components/station/Station.tsx) |
 | 界面与正文翻译 | [`src/components/station/i18n/`](src/components/station/i18n/) |
+| 各语言的更新与待同步项 | [翻译变更记录](docs/translations.md) |
 | 个人介绍的段落与分组 | [正文结构](src/components/station/content/profile-structure.json) |
 | 插画、音频与图标 | [媒体资源](public/) · [图片处理脚本](scripts/prepare-artwork.mjs) |
 | 排版与界面样式 | [`src/styles/`](src/styles/) |

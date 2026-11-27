@@ -150,5 +150,7 @@
   "musicRoomAlt": "창가에 소녀가 앉아 있고, 곁에 놓인 릴 테이프 녹음기와 구릿빛 나팔 모양 스피커에 햇살이 비친다.",
   "copyEmail": "이메일 주소 복사",
   "emailCopied": "이메일 주소를 복사했습니다",
-  "emailSelect": "이메일 주소를 선택했습니다. 직접 복사할 수 있습니다."
+  "emailSelect": "이메일 주소를 선택했습니다. 직접 복사할 수 있습니다.",
+  "readChineseOriginal": "중국어 원문 보기",
+  "workstationSignal": "이미지 처리에서 무선 신호 디코딩까지"
 }

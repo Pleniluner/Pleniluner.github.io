@@ -4,6 +4,7 @@ import { useMemo, useRef, useState, type MouseEvent } from "react";
 import { useLanguage } from "./i18n/LanguageProvider";
 import { fieldSubjects, foldKey } from "./navigation";
 import { profile } from "./ProfileContent";
+import { directoryQueryLimit } from "./directoryQuery";
 
 const chapters = [["top", "s055"], ["about", "s058"], ["now", "s077"], ["interests", "s083"], ["gear", "s085"], ["contact", "s095"]];
 
@@ -88,13 +89,14 @@ type Props = {
   subject: string;
   openFolds: string;
   entries: Entry[];
+  initialQuery: string;
   onNavigate(): void;
   onRead(target: HTMLElement, href: string): void;
 };
 
-export function DirectorySearch({ open, directory, subject, openFolds, entries, onNavigate, onRead }: Props) {
+export function DirectorySearch({ open, directory, subject, openFolds, entries, initialQuery, onNavigate, onRead }: Props) {
   const { t, locale } = useLanguage();
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState(initialQuery);
   const input = useRef<HTMLInputElement>(null);
   const resultList = useRef<HTMLDivElement>(null);
   const firstResult = useRef<HTMLAnchorElement>(null);
@@ -128,7 +130,7 @@ export function DirectorySearch({ open, directory, subject, openFolds, entries, 
           firstResult.current.focus();
         }
       }}
-        aria-label={t("searchBody")} placeholder={t("searchBody")} autoComplete="off" maxLength={120} enterKeyHint="search" />
+        aria-label={t("searchBody")} placeholder={t("searchBody")} autoComplete="off" maxLength={directoryQueryLimit} enterKeyHint="search" />
       {query && <button type="button" aria-label={t("clearSearch")} onClick={() => { setQuery(""); input.current?.focus(); }}>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.65" aria-hidden="true">
           <path d="m6 6 12 12M6 18 18 6" strokeLinecap="round"/>

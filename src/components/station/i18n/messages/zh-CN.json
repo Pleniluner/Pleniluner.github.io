@@ -150,5 +150,7 @@
   "musicRoomAlt": "少女坐在窗边，阳光照亮了她身旁的开盘式录音机和几只铜色的喇叭口。",
   "copyEmail": "复制邮箱",
   "emailCopied": "邮箱已复制",
-  "emailSelect": "已选中邮箱地址，可手动复制。"
+  "emailSelect": "已选中邮箱地址，可手动复制。",
+  "readChineseOriginal": "看中文原文",
+  "workstationSignal": "图像处理与无线电解码"
 }

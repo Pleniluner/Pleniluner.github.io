@@ -150,5 +150,7 @@
   "musicRoomAlt": "Una joven está sentada junto a la ventana. El sol ilumina una grabadora de bobinas y unas bocinas de color cobre a su lado.",
   "copyEmail": "Copiar dirección de correo",
   "emailCopied": "Dirección de correo copiada",
-  "emailSelect": "La dirección está seleccionada. Puedes copiarla manualmente."
+  "emailSelect": "La dirección está seleccionada. Puedes copiarla manualmente.",
+  "readChineseOriginal": "Leer el original en chino",
+  "workstationSignal": "Del procesamiento de imágenes a la decodificación de radio"
 }

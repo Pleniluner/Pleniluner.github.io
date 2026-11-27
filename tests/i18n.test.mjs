@@ -5,7 +5,7 @@ const folder='src/components/station/i18n/messages';
 const languages=['zh-CN','zh-TW','en','ja','ko','ru','fr','de','it','pt','es','ar'];
 test('all twelve dictionaries contain the complete text and no old identity',async()=>{
  const original=JSON.parse(await readFile(`${folder}/zh-CN.json`,'utf8'));
- assert.equal(Object.keys(original).length,152);
+ assert.equal(Object.keys(original).length,154);
  for(const lang of languages){
   const raw=await readFile(`${folder}/${lang}.json`,'utf8');
   const messages=JSON.parse(raw);

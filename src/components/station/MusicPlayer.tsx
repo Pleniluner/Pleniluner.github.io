@@ -2,7 +2,7 @@
 import { useLanguage } from "./i18n/LanguageProvider";
 import { asset } from "@/lib/site";
 
-import { type CSSProperties, type Ref, useImperativeHandle, useRef, useState } from "react";
+import { type CSSProperties, type Ref, useCallback, useEffect, useImperativeHandle, useRef, useState } from "react";
 
 const TRACKS = [
   {
@@ -26,7 +26,18 @@ const TRACKS = [
 ] as const;
 
 const NAME_TRACK = 1;
+const PLAYBACK_KEY = "station:music-position:v1";
+type Playback = { track: string; seconds: number };
 export type MusicPlayerControls = { playElysiasHeart(): void };
+
+function savedPlayback(): Playback | null {
+  try {
+    const value = JSON.parse(window.localStorage.getItem(PLAYBACK_KEY) ?? "null") as Playback | null;
+    const track = TRACKS.find(item => item.id === value?.track);
+    if (track && value && Number.isFinite(value.seconds) && value.seconds >= 0 && value.seconds < track.duration) return value;
+  } catch { /* The player can run without browser storage. */ }
+  return null;
+}
 
 function formatTime(value: number) {
   if (!Number.isFinite(value) || value < 0) return "0:00";
@@ -40,6 +51,8 @@ export function MusicPlayer({ ref }: { ref?: Ref<MusicPlayerControls> }) {
   const { t } = useLanguage();
   const audioRef = useRef<HTMLAudioElement>(null);
   const playbackRequestRef = useRef(0);
+  const pendingResume = useRef<Playback | null>(null);
+  const stored = useRef<Playback | null>(null);
   const [activeTrackIndex, setActiveTrackIndex] = useState(NAME_TRACK);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -48,6 +61,41 @@ export function MusicPlayer({ ref }: { ref?: Ref<MusicPlayerControls> }) {
   const [duration, setDuration] = useState<number>(TRACKS[NAME_TRACK].duration);
   const [error, setError] = useState("");
   const activeTrack = TRACKS[activeTrackIndex];
+
+  const save = useCallback((track: string, seconds: number, force = false) => {
+    const previous = stored.current;
+    if (previous?.track === track && (force ? previous.seconds === seconds : Math.floor(previous.seconds) === Math.floor(seconds))) return;
+    const value = { track, seconds };
+    stored.current = value;
+    try { window.localStorage.setItem(PLAYBACK_KEY, JSON.stringify(value)); } catch { /* Storage can be disabled. */ }
+  }, []);
+
+  const saveAudio = useCallback((audio: HTMLAudioElement, force = false) => {
+    const track = TRACKS.find(item => item.asset === audio.getAttribute("src"));
+    if (!track || pendingResume.current || audio.readyState < HTMLMediaElement.HAVE_METADATA) return;
+    save(track.id, audio.ended || audio.currentTime >= track.duration ? 0 : audio.currentTime, force);
+  }, [save]);
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    const playback = savedPlayback();
+    if (playback && audio) {
+      const index = TRACKS.findIndex(track => track.id === playback.track);
+      const track = TRACKS[index];
+      stored.current = playback;
+      if (playback.seconds > 0) pendingResume.current = playback;
+      if (audio.getAttribute("src") !== track.asset) audio.src = track.asset;
+      queueMicrotask(() => {
+        if (stored.current !== playback || audioRef.current !== audio) return;
+        setActiveTrackIndex(index);
+        setDuration(track.duration);
+        setCurrentTime(playback.seconds);
+      });
+    }
+    const saveOnExit = () => { if (audio) saveAudio(audio, true); };
+    window.addEventListener("pagehide", saveOnExit);
+    return () => window.removeEventListener("pagehide", saveOnExit);
+  }, [saveAudio]);
 
   const play = (audio: HTMLAudioElement) => {
     const request = ++playbackRequestRef.current;
@@ -74,6 +122,8 @@ export function MusicPlayer({ ref }: { ref?: Ref<MusicPlayerControls> }) {
 
     const continuePlaying = start || (!audio.paused && !audio.ended);
     playbackRequestRef.current += 1;
+    pendingResume.current = null;
+    save(next.id, 0, true);
     setActiveTrackIndex(index);
     setIsPlaying(false);
     setIsLoading(false);
@@ -110,6 +160,7 @@ export function MusicPlayer({ ref }: { ref?: Ref<MusicPlayerControls> }) {
 
     audio.currentTime = value;
     setCurrentTime(value);
+    saveAudio(audio, true);
   };
 
   const progress = duration > 0 ? (currentTime / duration) * 100 : 0;
@@ -199,12 +250,23 @@ export function MusicPlayer({ ref }: { ref?: Ref<MusicPlayerControls> }) {
         src={TRACKS[NAME_TRACK].asset}
         preload="none"
         onLoadedMetadata={(event) => {
-          if (event.currentTarget.readyState < HTMLMediaElement.HAVE_METADATA) return;
-          const nextDuration = event.currentTarget.duration;
+          const audio = event.currentTarget;
+          if (audio.readyState < HTMLMediaElement.HAVE_METADATA) return;
+          const nextDuration = audio.duration;
           if (Number.isFinite(nextDuration)) setDuration(nextDuration);
+          const resume = pendingResume.current;
+          if (resume && TRACKS.some(track => track.id === resume.track && audio.getAttribute("src") === track.asset)) {
+            pendingResume.current = null;
+            audio.currentTime = resume.seconds < nextDuration ? resume.seconds : 0;
+            setCurrentTime(audio.currentTime);
+          }
           setIsReady(true);
         }}
-        onTimeUpdate={(event) => setCurrentTime(event.currentTarget.currentTime)}
+        onTimeUpdate={({ currentTarget }) => {
+          if (pendingResume.current || currentTarget.readyState < HTMLMediaElement.HAVE_METADATA) return;
+          setCurrentTime(currentTarget.currentTime);
+          saveAudio(currentTarget);
+        }}
         onCanPlay={({ currentTarget }) => {
           if (currentTarget.readyState < HTMLMediaElement.HAVE_FUTURE_DATA) return;
           setIsReady(true);
@@ -223,6 +285,7 @@ export function MusicPlayer({ ref }: { ref?: Ref<MusicPlayerControls> }) {
           if (currentTarget.paused) {
             setIsPlaying(false);
             setIsLoading(false);
+            saveAudio(currentTarget, true);
           }
         }}
         onEnded={(event) => {
@@ -230,6 +293,7 @@ export function MusicPlayer({ ref }: { ref?: Ref<MusicPlayerControls> }) {
           event.currentTarget.currentTime = 0;
           setCurrentTime(0);
           setIsPlaying(false);
+          saveAudio(event.currentTarget, true);
         }}
         onError={({ currentTarget }) => {
           if (!currentTarget.error) return;

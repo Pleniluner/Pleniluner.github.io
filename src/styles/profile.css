@@ -53,3 +53,29 @@
   .profile-table th, .profile-table td { padding: 12px 8px; font-size: 13px; }
   .profile-table th:first-child { width: 35%; }
 }
+.name-story {
+  display:grid;
+  gap:20px;
+  margin-block-end:20px;
+}
+.name-story__thread {
+  padding-inline-start:16px;
+  border-inline-start:1px solid var(--rule);
+}
+.name-story__thread h3 { margin:0 0 8px; color:var(--ink); font-size:1rem; letter-spacing:.02em; }
+.name-story__path {
+  display:flex; flex-wrap:wrap; gap:.4em .55em; align-items:center;
+  width:fit-content; list-style:none; margin:0 0 10px; padding:0; color:var(--ink);
+}
+.name-story__path li { display:flex; align-items:center; gap:.55em; }
+.name-story__path li + li::before { content:"→" / ""; color:var(--muted); }
+.name-story__path li:last-child { font-weight:650; }
+.name-story__thread p { margin-block:0; }
+.name-story__song { display:inline-flex; align-items:center; gap:.3em; min-block-size:44px; }
+.profile-original { margin-block-start:16px; }
+.profile-original__body { padding:0 0 10px; text-align:start; }
+.profile-original__title { font-weight:650; margin-block:0 10px; }
+.station-home .workstation-intro > a {
+  display:inline-block; margin-block-start:2px; color:inherit;
+  text-decoration:underline; text-underline-offset:.23em;
+}
